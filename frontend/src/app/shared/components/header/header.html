@@ -4,7 +4,7 @@
     <button class="rounded-lg p-2 lg:hidden" (click)="menuOpen=!menuOpen" aria-label="Menu"><span class="block h-0.5 w-6 bg-ink"></span><span class="my-1.5 block h-0.5 w-6 bg-ink"></span><span class="block h-0.5 w-6 bg-ink"></span></button>
     <nav class="hidden items-center gap-8 lg:flex">
       <a routerLink="/courses" routerLinkActive="text-orange" class="text-sm font-semibold text-muted">Formations</a>
-      @if(auth.isAuthenticated()){
+      @if(auth.user()){
         <a routerLink="/dashboard" routerLinkActive="text-orange" class="text-sm font-semibold text-muted">Ma bibliothèque</a>
         <span class="h-5 w-px bg-line"></span>
         <a routerLink="/dashboard" class="text-sm font-semibold text-ink transition hover:text-orange">Mon compte</a>
@@ -19,7 +19,7 @@
     <nav class="border-t border-line bg-cream px-5 py-4 lg:hidden">
       <div class="mx-auto flex max-w-310 flex-col gap-4">
         <a routerLink="/courses" (click)="menuOpen=false">Formations</a>
-        @if(auth.isAuthenticated()){
+        @if(auth.user()){
           <a routerLink="/dashboard" (click)="menuOpen=false">Ma bibliothèque</a>
           <a routerLink="/dashboard" (click)="menuOpen=false" class="font-semibold">Mon compte</a>
           <button class="text-left text-orange" (click)="auth.logout();menuOpen=false">Déconnexion</button>
