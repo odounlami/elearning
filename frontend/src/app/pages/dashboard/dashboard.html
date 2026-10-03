@@ -75,7 +75,7 @@
                     <span class="text-muted">{{item.completedModuleIds.length}} / {{item.course.modules.length}} modules</span>
                     <strong class="font-mono text-xs">{{item.progress}}%</strong>
                   </div>
-                  <div class="mt-2"><app-progress-bar [value]="item.progress"/></div>
+                  <div class="mt-2 font-mono text-sm font-semibold text-orange">{{item.progress}}%</div>
                 </div>
 
                 <a [routerLink]="['/learn', item.course.id, item.course.modules[item.completedModuleIds.length]?.id || item.course.modules[0]?.id]" class="inline-flex w-fit shrink-0 rounded-full border border-line bg-cream px-5 py-2.5 text-sm font-semibold text-ink transition hover:border-orange hover:text-orange">
