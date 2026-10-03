@@ -31,6 +31,8 @@ export class Player implements AfterViewInit {
   readonly completed = signal<Set<number>>(new Set());
 
   audioLanguage = '';
+  private pendingAudioTime = 0;
+  private pendingAudioPlay = false;
 
   constructor() {
     this.route.paramMap.subscribe((params) => {
@@ -66,6 +68,8 @@ export class Player implements AfterViewInit {
 
         this.current.set(module);
         this.audioLanguage = module.audioTracks?.[0]?.language ?? course.language;
+        this.pendingAudioTime = 0;
+        this.pendingAudioPlay = false;
 
         if (module.id !== moduleId) {
           void this.router.navigate(['/learn', course.id, module.id], { replaceUrl: true });
@@ -151,14 +155,26 @@ export class Player implements AfterViewInit {
   onAudioLanguageChange(): void {
     const video = this.video?.nativeElement;
     const audio = this.audio?.nativeElement;
-    if (!video || !audio) return;
+    const track = this.selectedTrack;
+    if (!video || !audio || !track) return;
 
-    const wasPlaying = !video.paused;
+    this.pendingAudioTime = video.currentTime;
+    this.pendingAudioPlay = !video.paused;
+
     audio.pause();
-    audio.currentTime = video.currentTime;
+    audio.src = track.url;
     audio.load();
+  }
 
-    if (wasPlaying) {
+  onAudioLoaded(): void {
+    const audio = this.audio?.nativeElement;
+    if (!audio) return;
+
+    const shouldPlay = this.pendingAudioPlay;
+    audio.currentTime = Math.min(this.pendingAudioTime, Number.isFinite(audio.duration) ? audio.duration : this.pendingAudioTime);
+    this.pendingAudioPlay = false;
+
+    if (shouldPlay) {
       void audio.play().catch(() => undefined);
     }
   }
