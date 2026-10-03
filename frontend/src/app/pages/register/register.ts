@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { EMPTY, catchError, finalize } from 'rxjs';
+import { finalize } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { getAuthErrorMessage } from '../../core/auth/auth-error';
 import { revealPage } from '../../shared/utils/page-motion';
@@ -49,12 +49,9 @@ export class Register implements AfterViewInit {
     this.loading = true;
 
     this.auth.register(name.trim(), email.trim(), password).pipe(
-      catchError((error: unknown) => {
-        this.error = getAuthErrorMessage(error, 'register');
-        return EMPTY;
-      }),
       finalize(() => (this.loading = false)),
-    ).subscribe(() => {
+    ).subscribe({
+      next: () => {
       const pending = localStorage.getItem('elearning_pending_course');
       localStorage.removeItem('elearning_pending_course');
       const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
