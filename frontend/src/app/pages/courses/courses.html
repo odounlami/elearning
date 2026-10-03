@@ -6,7 +6,7 @@
         <h1 class="font-display text-5xl font-bold leading-tight">Les formations.</h1>
         <p class="mt-4 max-w-2xl text-lg leading-8 text-cream/70">Des formations courtes, concrètes et pensées pour passer rapidement de la théorie à la pratique.</p>
       </div>
-      <p class="font-mono text-xs uppercase tracking-widest text-cream/50">{{filteredAll.length}} formation{{filteredAll.length > 1 ? 's' : ''}}</p>
+      <p class="font-mono text-xs uppercase tracking-widest text-cream/50">{{all().length}} formation{{all().length > 1 ? 's' : ''}}</p>
     </div>
   </section>
 
@@ -20,13 +20,13 @@
       <option value="BEGINNER">Débutant</option>
       <option value="INTERMEDIATE">Intermédiaire</option>
       <option value="ADVANCED">Avancé</option>
-    </select><span class="pointer-events-none absolute right-3 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center text-muted"><svg viewBox="0 0 24 24" aria-hidden="true" class="h-4 w-4 fill-none stroke-current stroke-2"><path d="m6 9 6 6 6-6"/></svg></span></div>
+    </select><span class="pointer-events-none absolute right-3 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center text-muted"><svg viewBox="0 0 24 24" aria-hidden="true" class="h-4 w-4 fill-none stroke-current stroke-2"><path d="m6 9 6 6 6 6"/></svg></span></div>
 
     <label class="sr-only" for="course-language">Filtrer par langue</label>
     <div class="relative"><select id="course-language" [(ngModel)]="language" (ngModelChange)="page=1" class="w-full appearance-none rounded-xl border border-line bg-paper px-4 py-3 pr-10 text-ink outline-none transition focus:border-orange focus:ring-2 focus:ring-orange/20">
       <option value="ALL">Toutes les langues</option>
       @for(item of languages; track item){<option [value]="item">{{item}}</option>}
-    </select><span class="pointer-events-none absolute right-4 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center text-muted"><svg viewBox="0 0 24 24" aria-hidden="true" class="h-4 w-4 fill-none stroke-current stroke-2"><path d="m6 9 6 6 6-6"/></svg></span></div>
+    </select><span class="pointer-events-none absolute right-4 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center text-muted"><svg viewBox="0 0 24 24" aria-hidden="true" class="h-4 w-4 fill-none stroke-current stroke-2"><path d="m6 9 6 6 6 6"/></svg></span></div>
   </div>
 
   <div class="mt-9 grid items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
