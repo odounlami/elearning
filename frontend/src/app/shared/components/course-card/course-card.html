@@ -1,6 +1,6 @@
 <a [routerLink]="['/courses', course().id]" class="group block h-full">
   <article class="flex h-full min-h-130 flex-col overflow-hidden rounded-3xl border border-line bg-cream shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-    <div [class]="visualVariant" class="flex min-h-70 flex-col justify-between p-7 sm:p-8">
+    <div [class]="visualVariant()" class="flex min-h-70 flex-col justify-between p-7 sm:p-8">
       <div class="flex items-start justify-between gap-4">
         <div>
           <p class="font-mono text-[10px] font-semibold uppercase tracking-widest opacity-70">
@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <div class="flex flex-1 flex-col p-6 sm:p-7">
+    <div class="flex flex-1 flex-col bg-cream p-6 sm:p-7">
       <p class="min-h-18 line-clamp-3 text-sm leading-6 text-muted">
         {{course().description}}
       </p>
