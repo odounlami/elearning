@@ -1,1 +1,46 @@
-<main class="mx-auto max-w-310 px-5 py-10 lg:px-8 lg:py-16"><div class="js-reveal max-w-3xl"><p class="font-mono text-xs uppercase tracking-widest text-orange">Catalogue</p><h1 class="mt-3 font-display text-5xl font-bold leading-tight">Choisissez votre prochain chapitre.</h1><p class="mt-4 text-lg leading-8 text-muted">Des formations courtes, concrètes et pensées pour passer rapidement de la théorie à la pratique.</p></div><div class="js-reveal mt-8 grid gap-3 rounded-2xl border border-line bg-cream p-3 shadow-sm md:grid-cols-[1fr_auto_auto]"><input [(ngModel)]="search" type="search" placeholder="Rechercher une formation..." aria-label="Rechercher une formation" class="rounded-xl bg-paper px-4 py-3 outline-none transition focus:ring-2 focus:ring-orange"><select [(ngModel)]="domain" aria-label="Filtrer par domaine" class="rounded-xl bg-paper px-4 py-3 outline-none"><option value="ALL">Tous les domaines</option>@for(item of domains;track item){<option [value]="item">{{item}}</option>}</select><select [(ngModel)]="level" aria-label="Filtrer par niveau" class="rounded-xl bg-paper px-4 py-3 outline-none"><option value="ALL">Tous les niveaux</option><option value="BEGINNER">Débutant</option><option value="INTERMEDIATE">Intermédiaire</option><option value="ADVANCED">Avancé</option></select></div><div class="mt-9 grid gap-6 md:grid-cols-2 lg:grid-cols-3">@for(course of filtered;track course.id){<app-course-card class="js-reveal" [course]="course"/>}</div>@if(!filtered.length){<div class="mt-8 rounded-2xl border border-dashed border-line p-12 text-center text-muted">Aucune formation ne correspond à votre recherche.</div>}</main>
+<main class="mx-auto max-w-310 px-5 py-10 lg:px-8 lg:py-16">
+  <div class="js-reveal max-w-3xl">
+    <p class="font-mono text-xs uppercase tracking-widest text-orange">Catalogue</p>
+    <h1 class="mt-3 font-display text-5xl font-bold leading-tight">Choisissez votre prochain chapitre.</h1>
+    <p class="mt-4 text-lg leading-8 text-muted">Des formations courtes, concrètes et pensées pour passer rapidement de la théorie à la pratique.</p>
+  </div>
+
+  <div class="js-reveal mt-8 grid gap-3 rounded-2xl border border-line bg-cream p-3 md:grid-cols-4">
+    <label class="sr-only" for="course-search">Rechercher une formation</label>
+    <input id="course-search" [(ngModel)]="search" type="search" placeholder="Rechercher une formation..." class="rounded-xl bg-paper px-4 py-3 outline-none transition focus:ring-2 focus:ring-orange">
+
+    <label class="sr-only" for="course-domain">Filtrer par domaine</label>
+    <select id="course-domain" [(ngModel)]="domain" class="rounded-xl bg-paper px-4 py-3 outline-none">
+      <option value="ALL">Tous les domaines</option>
+      @for(item of domains; track item){<option [value]="item">{{item}}</option>}
+    </select>
+
+    <label class="sr-only" for="course-level">Filtrer par niveau</label>
+    <select id="course-level" [(ngModel)]="level" class="rounded-xl bg-paper px-4 py-3 outline-none">
+      <option value="ALL">Tous les niveaux</option>
+      <option value="BEGINNER">Débutant</option>
+      <option value="INTERMEDIATE">Intermédiaire</option>
+      <option value="ADVANCED">Avancé</option>
+    </select>
+
+    <label class="sr-only" for="course-language">Filtrer par langue</label>
+    <select id="course-language" [(ngModel)]="language" class="rounded-xl bg-paper px-4 py-3 outline-none">
+      <option value="ALL">Toutes les langues</option>
+      @for(item of languages; track item){<option [value]="item">{{item}}</option>}
+    </select>
+  </div>
+
+  <div class="mt-9 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    @for(course of filtered; track course.id){
+      <app-course-card
+        class="js-reveal"
+        [course]="course"
+        [inLibrary]="libraryIds().has(course.id)"
+      />
+    }
+  </div>
+
+  @if(!filtered.length){
+    <div class="mt-8 rounded-2xl border border-dashed border-line p-12 text-center text-muted">Aucune formation ne correspond à votre recherche.</div>
+  }
+</main>
