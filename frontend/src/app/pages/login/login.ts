@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
@@ -19,30 +19,30 @@ export class Login implements AfterViewInit {
     password: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
   });
 
-  error = '';
-  loading = false;
+  readonly error = signal('');
+  readonly loading = signal(false);
 
   ngAfterViewInit() {
     revealPage(this.host);
   }
 
   submit() {
-    this.error = '';
+    this.error.set('');
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    this.loading = true;
+    this.loading.set(true);
     const { email, password } = this.form.getRawValue();
 
     this.auth.login(email.trim(), password).subscribe({
       next: (result) => {
-        this.loading = false;
+        this.loading.set(false);
 
         if (!result.success) {
-          this.error = result.message;
+          this.error.set(result.message);
           return;
         }
 
