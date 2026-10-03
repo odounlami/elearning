@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, inject, signal } from '@angular/c
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { CoursesService } from '../../core/courses/courses.service';
-import { Course, Enrollment } from '../../shared/models/course';
+import { Course, Enrollment, Level } from '../../shared/models/course';
 import { ProgressBar } from '../../shared/components/progress-bar/progress-bar';
 import { AuthService } from '../../core/auth/auth.service';
 import { revealPage } from '../../shared/utils/page-motion';
@@ -14,18 +14,62 @@ export class Dashboard implements AfterViewInit {
   readonly favorites=signal<Course[]>([]);
   search='';
   libraryFilter: 'all' | 'favorites' = 'all';
+  levelFilter: 'all' | Level = 'all';
+  sortBy: 'recent' | 'title' | 'progress' = 'recent';
+  page = 1;
+  readonly pageSize = 12;
   constructor(){
     this.service.library().subscribe(x=>this.items.set(x));
     this.service.favorites().subscribe(x=>this.favorites.set(x));
   }
   ngAfterViewInit(){revealPage(this.host);}
-  get filteredLibraryItems(): Enrollment[] {
+  get matchingLibraryItems(): Enrollment[] {
     const term = this.search.trim().toLowerCase();
     const favoriteIds = new Set(this.favorites().map((course) => course.id));
-    return this.items().filter(({ course }) => {
+    const filtered = this.items().filter(({ course }) => {
       const matchesSearch = !term || (course.title + ' ' + course.instructor).toLowerCase().includes(term);
-      const matchesFilter = this.libraryFilter === 'all' || favoriteIds.has(course.id);
-      return matchesSearch && matchesFilter;
+      const matchesFavorite = this.libraryFilter === 'all' || favoriteIds.has(course.id);
+      const matchesLevel = this.levelFilter === 'all' || course.level === this.levelFilter;
+      return matchesSearch && matchesFavorite && matchesLevel;
     });
+
+    return [...filtered].sort((a, b) => {
+      if (this.sortBy === 'title') return a.course.title.localeCompare(b.course.title, 'fr');
+      if (this.sortBy === 'progress') return b.progress - a.progress;
+      return b.course.id - a.course.id;
+    });
+  }
+
+  get filteredLibraryItems(): Enrollment[] {
+    const start = (this.page - 1) * this.pageSize;
+    return this.matchingLibraryItems.slice(start, start + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.matchingLibraryItems.length / this.pageSize));
+  }
+
+  get currentPage(): number {
+    return Math.min(this.page, this.totalPages);
+  }
+
+  get hasPreviousPage(): boolean {
+    return this.currentPage > 1;
+  }
+
+  get hasNextPage(): boolean {
+    return this.currentPage < this.totalPages;
+  }
+
+  getLevelLabel(level: Level): string {
+    return level === 'BEGINNER' ? 'Débutant' : level === 'INTERMEDIATE' ? 'Intermédiaire' : 'Avancé';
+  }
+
+  isFavorite(courseId: number): boolean {
+    return this.favorites().some((course) => course.id === courseId);
+  }
+
+  setPage(page: number): void {
+    this.page = Math.max(1, Math.min(page, this.totalPages));
   }
 }
