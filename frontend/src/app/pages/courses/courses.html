@@ -10,15 +10,9 @@
     </div>
   </section>
 
-  <div class="js-reveal mt-6 grid gap-3 rounded-2xl border border-line bg-cream p-3 md:grid-cols-4">
+  <div class="js-reveal mt-6 grid gap-3 rounded-2xl border border-line bg-cream p-3 md:grid-cols-3">
     <label class="sr-only" for="course-search">Rechercher une formation</label>
-    <input id="course-search" [(ngModel)]="search" type="search" placeholder="Rechercher une formation..." class="rounded-xl bg-paper px-4 py-3 outline-none transition focus:ring-2 focus:ring-orange">
-
-    <label class="sr-only" for="course-domain">Filtrer par domaine</label>
-    <select id="course-domain" [(ngModel)]="domain" class="rounded-xl bg-paper px-4 py-3 outline-none">
-      <option value="ALL">Tous les domaines</option>
-      @for(item of domains; track item){<option [value]="item">{{item}}</option>}
-    </select>
+    <input id="course-search" [(ngModel)]="search" type="search" placeholder="Rechercher par titre ou formateur..." class="rounded-xl bg-paper px-4 py-3 outline-none transition focus:ring-2 focus:ring-orange">
 
     <label class="sr-only" for="course-level">Filtrer par niveau</label>
     <select id="course-level" [(ngModel)]="level" class="rounded-xl bg-paper px-4 py-3 outline-none">
@@ -35,9 +29,9 @@
     </select>
   </div>
 
-  <div class="mt-9 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+  <div class="mt-9 grid items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
     @for(course of filtered; track course.id){
-      <app-course-card class="js-reveal" [course]="course" [inLibrary]="libraryIds().has(course.id)"/>
+      <app-course-card class="js-reveal h-full" [course]="course" [inLibrary]="libraryIds().has(course.id)"/>
     }
   </div>
 
