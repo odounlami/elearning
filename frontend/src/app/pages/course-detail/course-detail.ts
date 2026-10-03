@@ -40,8 +40,8 @@ export class CourseDetail implements AfterViewInit {
 
     if (this.auth.isAuthenticated()) {
       this.service.library().subscribe({
-        next: (items) => { this.enrolled = items.some((item) => item.course.id === id); this.libraryReady = true; loadCourse(); },
-        error: () => { this.libraryReady = true; loadCourse(); },
+        next: (items) => { this.enrolled.set(items.some((item) => item.course.id === id)); this.libraryReady.set(true); loadCourse(); },
+        error: () => { this.libraryReady.set(true); loadCourse(); },
       });
     } else loadCourse();
   }
