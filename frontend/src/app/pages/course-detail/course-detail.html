@@ -8,7 +8,7 @@
         <div class="mt-7 flex flex-wrap items-center gap-3">
           @if(!libraryReady()) {
             <span class="inline-flex rounded-full border border-line bg-paper px-6 py-3.5 font-semibold text-muted">Vérification de votre bibliothèque…</span>
-          } @else if(enrolled) {
+          } @else if(enrolled()) {
             <a routerLink="/dashboard" class="inline-flex rounded-full border border-line bg-paper px-6 py-3.5 font-semibold text-ink transition hover:border-orange hover:text-orange">✓ Déjà ajouté à ma bibliothèque</a>
           } @else {
             <button (click)="enroll()" [disabled]="enrolling" class="rounded-full bg-orange px-6 py-3.5 font-semibold text-white transition hover:bg-orange-dark disabled:cursor-wait disabled:opacity-60">{{ enrolling ? 'Ajout en cours…' : 'Ajouter à ma bibliothèque' }}</button>
