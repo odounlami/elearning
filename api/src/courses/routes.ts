@@ -1,11 +1,11 @@
-import { Router } from 'express';
+import { Router, type Request } from 'express';
 import { prisma } from '../lib/prisma.js';
 import { verifyAccessToken } from '../auth/jwt.js';
 import { requireAuth, type AuthenticatedRequest } from '../auth/middleware.js';
 
 export const coursesRouter = Router();
 
-function getOptionalUserId(req: Parameters<typeof verifyAccessToken>[0] extends never ? never : any): number | null {
+function getOptionalUserId(req: Request): number | null {
   const authorization = req.header('Authorization');
 
   if (!authorization?.startsWith('Bearer ')) {
@@ -58,7 +58,7 @@ coursesRouter.get('/courses/:id', async (req, res) => {
       modules: {
         orderBy: { position: 'asc' },
         include: {
-          audioTracks: enrollment ? true : false,
+          audioTracks: true,
         },
       },
     },
