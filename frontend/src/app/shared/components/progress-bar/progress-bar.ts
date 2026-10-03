@@ -1,2 +1,2 @@
 import { Component, input } from '@angular/core';
-@Component({selector:'app-progress-bar',templateUrl:'./progress-bar.html'}) export class ProgressBar { readonly value=input(0); }
+@Component({selector:'app-progress-bar',host:{class:'block w-full'},templateUrl:'./progress-bar.html'}) export class ProgressBar { readonly value=input(0); }
