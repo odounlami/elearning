@@ -21,7 +21,7 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-elearning}:${POSTGRES_PASSWORD:-change_me}@db:5432/${POSTGRES_DB:-elearning}?schema=public
       JWT_SECRET: ${JWT_SECRET:-change-this-secret-for-local-docker}
-      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:8080}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://127.0.0.1:8080}
       PORT: 3000
     ports:
       - "127.0.0.1:3000:3000"
