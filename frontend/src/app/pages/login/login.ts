@@ -1,9 +1,7 @@
 import { AfterViewInit, Component, ElementRef, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { finalize } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
-import { getAuthErrorMessage } from '../../core/auth/auth-error';
 import { revealPage } from '../../shared/utils/page-motion';
 
 @Component({
@@ -39,19 +37,21 @@ export class Login implements AfterViewInit {
     this.loading = true;
     const { email, password } = this.form.getRawValue();
 
-    this.auth.login(email.trim(), password).pipe(
-      finalize(() => (this.loading = false)),
-    ).subscribe({
-      next: () => {
+    this.auth.login(email.trim(), password).subscribe({
+      next: (result) => {
+        this.loading = false;
+
+        if (!result.success) {
+          this.error = result.message;
+          return;
+        }
+
         const pending = localStorage.getItem('elearning_pending_course');
         localStorage.removeItem('elearning_pending_course');
         void this.router.navigateByUrl(
           this.route.snapshot.queryParamMap.get('returnUrl') ||
           (pending ? `/courses/${pending}` : '/dashboard'),
         );
-      },
-      error: (error: unknown) => {
-        this.error = getAuthErrorMessage(error, 'login');
       },
     });
   }
