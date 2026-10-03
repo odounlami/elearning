@@ -4,45 +4,31 @@
     <h1 class="mt-2 font-display text-5xl font-bold">Bonjour {{auth.user()?.name}}.</h1>
     <p class="mt-3 text-lg text-muted">Reprenez exactement là où vous vous êtes arrêté.</p>
   </div>
-
   @if(items().length){
     <section class="mt-10">
       <h2 class="js-reveal font-display text-2xl font-bold">Mes formations</h2>
-
       <div class="mt-5 grid gap-6">
         @for(item of items(); track item.course.id){
-          <article class="js-reveal overflow-hidden rounded-3xl border border-line bg-cream shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
+          <article class="js-reveal overflow-hidden rounded-3xl border border-line bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
             <div class="grid lg:grid-cols-[.8fr_1.2fr]">
               <div class="flex min-h-55 flex-col justify-between bg-ink p-7 text-cream sm:p-8">
                 <div>
                   <p class="font-mono text-[10px] uppercase tracking-widest text-amber">{{item.course.domain}}</p>
-                  <p class="mt-2 font-mono text-[10px] uppercase tracking-widest text-cream/50">
-                    {{item.course.level}} · {{item.course.language}}
-                  </p>
+                  <p class="mt-2 font-mono text-[10px] uppercase tracking-widest text-cream/50">{{item.course.level}} · {{item.course.language}}</p>
                 </div>
                 <div class="mt-10">
                   <h3 class="font-display text-3xl font-bold leading-tight">{{item.course.title}}</h3>
                   <p class="mt-2 text-sm text-cream/60">{{item.course.instructor}}</p>
                 </div>
               </div>
-
-              <div class="flex flex-col justify-center p-7 sm:p-8">
+              <div class="flex flex-col justify-center border-l border-line bg-white p-7 sm:p-8">
                 <p class="font-mono text-xs uppercase tracking-widest text-orange">Progression</p>
                 <div class="mt-3 flex items-end justify-between gap-4">
                   <strong class="font-display text-3xl">{{item.progress}}%</strong>
-                  <span class="text-sm text-muted">
-                    {{item.completedModuleIds.length}} / {{item.course.modules.length}} modules
-                  </span>
+                  <span class="text-sm text-muted">{{item.completedModuleIds.length}} / {{item.course.modules.length}} modules</span>
                 </div>
-
-                <div class="mt-4">
-                  <app-progress-bar [value]="item.progress"/>
-                </div>
-
-                <a
-                  [routerLink]="['/learn', item.course.id, item.course.modules[item.completedModuleIds.length]?.id || item.course.modules[0]?.id]"
-                  class="mt-7 inline-flex w-fit rounded-full bg-orange px-5 py-3 text-sm font-semibold text-white transition hover:bg-orange-dark"
-                >
+                <div class="mt-4"><app-progress-bar [value]="item.progress"/></div>
+                <a [routerLink]="['/learn', item.course.id, item.course.modules[item.completedModuleIds.length]?.id || item.course.modules[0]?.id]" class="mt-7 inline-flex w-fit rounded-full bg-orange px-5 py-3 text-sm font-semibold text-white transition hover:bg-orange-dark">
                   {{ item.progress === 100 ? 'Revoir la formation' : 'Continuer →' }}
                 </a>
               </div>
@@ -56,9 +42,7 @@
       <p class="font-mono text-xs uppercase tracking-widest text-orange">Votre bibliothèque</p>
       <h2 class="mt-3 font-display text-2xl font-bold">Votre bibliothèque est vide.</h2>
       <p class="mt-2 text-muted">Choisissez une formation et commencez votre prochain chapitre.</p>
-      <a routerLink="/courses" class="mt-6 inline-block rounded-full bg-orange px-6 py-3 font-semibold text-white">
-        Explorer les formations
-      </a>
+      <a routerLink="/courses" class="mt-6 inline-block rounded-full bg-orange px-6 py-3 font-semibold text-white">Explorer les formations</a>
     </section>
   }
 </main>
