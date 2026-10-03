@@ -144,7 +144,7 @@ coursesRouter.get('/me/favorites', requireAuth, async (req, res) => {
   return res.json(
     favorites.map(({ course }) => ({
       ...course,
-      modules: course.modules.map(({ videoUrl, audioTracks, ...module }) => module),
+      modules: course.modules.map(({ videoUrl, ...module }) => module),
     })),
   );
 });
