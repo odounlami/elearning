@@ -17,10 +17,22 @@ export class Register implements AfterViewInit {
   private readonly host = inject(ElementRef<HTMLElement>);
 
   readonly form = new FormGroup({
-    name: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(2)] }),
-    email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
-    password: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(8)] }),
-    confirmPassword: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    name: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(2)],
+    }),
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.email],
+    }),
+    password: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(8)],
+    }),
+    confirmPassword: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
   });
 
   error = '';
@@ -48,17 +60,22 @@ export class Register implements AfterViewInit {
 
     this.loading = true;
 
-    this.auth.register(name.trim(), email.trim(), password).pipe(
-      finalize(() => (this.loading = false)),
-    ).subscribe({
-      next: () => {
-      const pending = localStorage.getItem('elearning_pending_course');
-      localStorage.removeItem('elearning_pending_course');
-      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    this.auth
+      .register(name.trim(), email.trim(), password)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: () => {
+          const pending = localStorage.getItem('elearning_pending_course');
+          localStorage.removeItem('elearning_pending_course');
+          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
 
-      void this.router.navigateByUrl(
-        returnUrl || (pending ? `/courses/${pending}` : '/dashboard'),
-      );
-    });
+          void this.router.navigateByUrl(
+            returnUrl || (pending ? `/courses/${pending}` : '/dashboard'),
+          );
+        },
+        error: (error: unknown) => {
+          this.error = getAuthErrorMessage(error, 'register');
+        },
+      });
   }
 }
