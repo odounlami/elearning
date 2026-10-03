@@ -8,11 +8,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
   const router = inject(Router);
   const token = auth.token();
-  const isAuthRequest = req.url.includes('/auth/login') || req.url.includes('/auth/register');
+  const isAuthRequest =
+    req.url.includes('/auth/login') || req.url.includes('/auth/register');
 
-  const request = token
-    ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
-    : req;
+  const request =
+    token && !isAuthRequest
+      ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
+      : req;
 
   return next(request).pipe(
     catchError((error) => {
