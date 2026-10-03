@@ -21,6 +21,8 @@ export class Courses implements AfterViewInit {
   search = '';
   level: 'ALL' | Level = 'ALL';
   language = 'ALL';
+  page = 1;
+  readonly pageSize = 9;
 
   constructor() {
     this.service.list().subscribe((courses) => this.all.set(courses));
@@ -35,19 +37,29 @@ export class Courses implements AfterViewInit {
     return [...new Set(this.all().map((course) => course.language))].sort();
   }
 
-  get filtered(): Course[] {
+  get filteredAll(): Course[] {
     const term = this.search.trim().toLowerCase();
     return this.all().filter((course) => {
-      const matchesSearch =
-        !term ||
-        `${course.title} ${course.instructor}`.toLowerCase().includes(term);
-
-      return (
-        matchesSearch &&
-        (this.level === 'ALL' || course.level === this.level) &&
-        (this.language === 'ALL' || course.language === this.language)
-      );
+      const matchesSearch = !term || `${course.title} ${course.instructor}`.toLowerCase().includes(term);
+      return matchesSearch && (this.level === 'ALL' || course.level === this.level) && (this.language === 'ALL' || course.language === this.language);
     });
+  }
+
+  get filtered(): Course[] {
+    const start = (this.page - 1) * this.pageSize;
+    return this.filteredAll.slice(start, start + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredAll.length / this.pageSize));
+  }
+
+  get currentPage(): number {
+    return Math.min(this.page, this.totalPages);
+  }
+
+  setPage(page: number): void {
+    this.page = Math.max(1, Math.min(page, this.totalPages));
   }
 
   ngAfterViewInit(): void {
