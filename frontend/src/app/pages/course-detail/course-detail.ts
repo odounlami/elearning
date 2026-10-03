@@ -50,7 +50,7 @@ export class CourseDetail implements AfterViewInit {
 
   enroll(): void {
     const id = this.course()?.id;
-    if (!id || this.enrolled || this.enrolling) return;
+    if (!id || this.enrolled() || this.enrolling) return;
     if (!this.auth.isAuthenticated()) {
       localStorage.setItem('elearning_pending_course', String(id));
       void this.router.navigate(['/login'], { queryParams: { returnUrl: '/courses/' + id } });
