@@ -10,6 +10,6 @@
       <div class="flex justify-end"><a routerLink="/forgot-password" class="text-xs font-semibold text-orange">Mot de passe oublié ?</a></div>
       <button [disabled]="loading" class="w-full rounded-xl bg-orange py-3.5 font-semibold text-white transition hover:bg-orange-dark disabled:opacity-60">{{loading?'Connexion...':'Se connecter'}}</button>
     </form>
-    <p class="mt-5 text-center text-sm text-muted">Pas encore de compte ? <a routerLink="/register" class="font-semibold text-orange">S'inscrire</a></p>
+    <p class="mt-5 text-center text-sm text-muted">Pas encore de compte ? <a [routerLink]="['/register']" [queryParams]="{returnUrl: route.snapshot.queryParamMap.get('returnUrl')}" class="font-semibold text-orange">S'inscrire</a></p>
   </section>
 </main>
