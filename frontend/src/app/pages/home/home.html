@@ -1,1 +1,49 @@
-<main><section class="relative overflow-hidden"><div class="mx-auto grid max-w-310 gap-14 px-5 py-18 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:px-8 lg:py-26"><div><p class="font-mono text-xs font-semibold uppercase tracking-[.22em] text-orange">Apprendre autrement</p><h1 class="mt-5 max-w-3xl font-display text-5xl font-bold leading-[1.02] sm:text-6xl lg:text-7xl">Ouvrez un nouveau chapitre.</h1><p class="mt-6 max-w-xl text-lg leading-8 text-muted">Développez de nouvelles compétences, à votre rythme.</p><a routerLink="/courses" class="mt-9 inline-block rounded-full bg-orange px-6 py-3.5 font-semibold text-white shadow-lg">Explorer les formations</a></div><div class="relative mx-auto h-95 w-full max-w-120"><div class="absolute left-1/2 top-1/2 h-64 w-48 -translate-x-1/2 -translate-y-1/2 rotate-6 rounded-2xl bg-orange p-6 shadow-2xl"><span class="font-mono text-xs uppercase tracking-widest text-white/70">Nouveau chapitre</span><h2 class="mt-10 font-display text-4xl font-bold leading-tight text-white">Apprendre, puis faire.</h2></div><div class="absolute left-5 top-14 h-55 w-35 -rotate-12 rounded-xl border border-line bg-cream p-4 shadow-xl"><span class="font-display text-xl font-bold">Idées</span></div><div class="absolute bottom-6 right-5 h-55 w-35 rotate-12 rounded-xl bg-ink p-4 shadow-xl"><span class="font-mono text-xs uppercase tracking-widest text-amber">01</span><span class="mt-16 block font-display text-xl font-bold text-cream">Pratique</span></div></div></div></section><section class="bg-paper-deep/40"><div class="mx-auto max-w-310 px-5 py-18 lg:px-8"><p class="font-mono text-xs uppercase tracking-widest text-orange">Le catalogue</p><h2 class="mt-2 font-display text-3xl font-bold">Commencez par une idée.</h2>@if(courses().length){<div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">@for(course of courses();track course.id){<app-course-card [course]="course"/>}</div>}@else{<div class="mt-8 rounded-2xl border border-dashed border-line p-10 text-center text-muted">Le catalogue arrive bientôt.</div>}</div></section></main>
+<main #page class="overflow-hidden">
+  <section class="relative">
+    <div class="pointer-events-none absolute -right-32 top-10 h-80 w-80 rounded-full bg-amber/20 blur-3xl"></div>
+    <div class="mx-auto grid max-w-310 gap-12 px-5 py-14 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:px-8 lg:py-22">
+      <div class="js-reveal">
+        <p class="font-mono text-xs font-semibold uppercase tracking-[.22em] text-orange">Apprendre autrement</p>
+        <h1 class="mt-5 max-w-3xl font-display text-5xl font-bold leading-[1.02] sm:text-6xl lg:text-7xl">Ouvrez un nouveau chapitre.</h1>
+        <p class="mt-6 max-w-xl text-lg leading-8 text-muted">Développez de nouvelles compétences, à votre rythme.</p>
+        <div class="mt-9 flex flex-wrap items-center gap-4">
+          <a routerLink="/courses" class="rounded-full bg-orange px-6 py-3.5 font-semibold text-white shadow-lg shadow-orange/15 transition hover:-translate-y-0.5 hover:bg-orange-dark">Explorer les formations</a>
+          <span class="font-mono text-xs uppercase tracking-widest text-muted">Lire · pratiquer · progresser</span>
+        </div>
+      </div>
+      <div class="relative mx-auto h-90 w-full max-w-120">
+        <div class="js-float absolute left-1/2 top-1/2 h-64 w-48 -translate-x-1/2 -translate-y-1/2 rotate-6 rounded-2xl bg-orange p-6 shadow-2xl">
+          <span class="font-mono text-xs uppercase tracking-widest text-white/70">Nouveau chapitre</span>
+          <h2 class="mt-10 font-display text-4xl font-bold leading-tight text-white">Apprendre,<br>puis faire.</h2>
+        </div>
+        <div class="js-float absolute left-4 top-12 h-55 w-35 -rotate-12 rounded-xl border border-line bg-cream p-4 shadow-xl">
+          <span class="font-display text-xl font-bold">Idées</span>
+          <span class="mt-20 block font-mono text-[10px] uppercase tracking-widest text-muted">01 / notes</span>
+        </div>
+        <div class="js-float absolute bottom-4 right-3 h-55 w-35 rotate-12 rounded-xl bg-ink p-4 shadow-xl">
+          <span class="font-mono text-xs uppercase tracking-widest text-amber">02</span>
+          <span class="mt-16 block font-display text-xl font-bold text-cream">Pratique</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-paper-deep/40">
+    <div class="mx-auto max-w-310 px-5 py-14 lg:px-8 lg:py-18">
+      <div class="js-reveal flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p class="font-mono text-xs uppercase tracking-widest text-orange">Le catalogue</p>
+          <h2 class="mt-2 font-display text-3xl font-bold">Commencez par une idée.</h2>
+        </div>
+        <a routerLink="/courses" class="text-sm font-semibold text-orange">Voir tout le catalogue →</a>
+      </div>
+      @if(courses().length){
+        <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          @for(course of courses();track course.id){<app-course-card class="js-reveal" [course]="course"/>}
+        </div>
+      } @else {
+        <div class="mt-8 rounded-2xl border border-dashed border-line p-10 text-center text-muted">Le catalogue arrive bientôt.</div>
+      }
+    </div>
+  </section>
+</main>
