@@ -6,7 +6,6 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CoursesService } from '../../core/courses/courses.service';
 import { Course, Module } from '../../shared/models/course';
@@ -14,7 +13,7 @@ import { ProgressBar } from '../../shared/components/progress-bar/progress-bar';
 import { revealPage } from '../../shared/utils/page-motion';
 
 @Component({
-  imports: [FormsModule, RouterLink, ProgressBar],
+  imports: [RouterLink, ProgressBar],
   templateUrl: './player.html',
 })
 export class Player implements AfterViewInit {
@@ -24,15 +23,10 @@ export class Player implements AfterViewInit {
   private readonly host = inject(ElementRef<HTMLElement>);
 
   @ViewChild('video') private video?: ElementRef<HTMLVideoElement>;
-  @ViewChild('audio') private audio?: ElementRef<HTMLAudioElement>;
 
   readonly course = signal<Course | null>(null);
   readonly current = signal<Module | null>(null);
   readonly completed = signal<Set<number>>(new Set());
-
-  audioLanguage = '';
-  private pendingAudioTime = 0;
-  private pendingAudioPlay = false;
 
   constructor() {
     this.route.paramMap.subscribe((params) => {
@@ -67,9 +61,6 @@ export class Player implements AfterViewInit {
         }
 
         this.current.set(module);
-        this.audioLanguage = module.audioTracks?.[0]?.language ?? course.language;
-        this.pendingAudioTime = 0;
-        this.pendingAudioPlay = false;
 
         if (module.id !== moduleId) {
           void this.router.navigate(['/learn', course.id, module.id], { replaceUrl: true });
@@ -87,14 +78,6 @@ export class Player implements AfterViewInit {
     return course?.modules.length
       ? Math.round((this.completed().size / course.modules.length) * 100)
       : 0;
-  }
-
-  get audioTracks() {
-    return this.current()?.audioTracks ?? [];
-  }
-
-  get selectedTrack() {
-    return this.audioTracks.find((track) => track.language === this.audioLanguage) ?? this.audioTracks[0];
   }
 
   get currentIndex(): number {
@@ -150,62 +133,5 @@ export class Player implements AfterViewInit {
   next(): void {
     const course = this.course();
     if (course && this.hasNext && this.canGoNext) this.selectModule(course.modules[this.currentIndex + 1]);
-  }
-
-  onAudioLanguageChange(): void {
-    const video = this.video?.nativeElement;
-    const audio = this.audio?.nativeElement;
-    const track = this.selectedTrack;
-    if (!video || !audio || !track) return;
-
-    this.pendingAudioTime = video.currentTime;
-    this.pendingAudioPlay = !video.paused;
-
-    audio.pause();
-    audio.src = track.url;
-    audio.load();
-  }
-
-  onAudioCanPlay(): void {
-    const audio = this.audio?.nativeElement;
-    if (!audio) return;
-
-    const shouldPlay = this.pendingAudioPlay;
-    const targetTime = this.pendingAudioTime;
-    audio.currentTime = Math.min(
-      targetTime,
-      Number.isFinite(audio.duration) ? audio.duration : targetTime,
-    );
-    this.pendingAudioPlay = false;
-
-    if (shouldPlay) {
-      void audio.play().catch(() => undefined);
-    }
-  }
-
-  syncPlay(): void {
-    const audio = this.audio?.nativeElement;
-    if (audio) {
-      audio.currentTime = this.video?.nativeElement.currentTime ?? 0;
-      void audio.play().catch(() => undefined);
-    }
-  }
-
-  syncPause(): void {
-    this.audio?.nativeElement.pause();
-  }
-
-  syncSeek(): void {
-    const video = this.video?.nativeElement;
-    const audio = this.audio?.nativeElement;
-    if (video && audio) audio.currentTime = video.currentTime;
-  }
-
-  syncTime(): void {
-    const video = this.video?.nativeElement;
-    const audio = this.audio?.nativeElement;
-    if (video && audio && Math.abs(video.currentTime - audio.currentTime) > 0.35) {
-      audio.currentTime = video.currentTime;
-    }
   }
 }
