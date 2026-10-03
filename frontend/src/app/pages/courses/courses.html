@@ -12,10 +12,10 @@
 
   <div class="js-reveal mt-6 grid gap-3 rounded-2xl border border-line bg-cream p-3 md:grid-cols-3">
     <label class="sr-only" for="course-search">Rechercher une formation</label>
-    <input id="course-search" [(ngModel)]="search" type="search" placeholder="Rechercher par titre ou formateur..." class="rounded-xl bg-paper px-4 py-3 outline-none transition focus:ring-2 focus:ring-orange">
+    <input id="course-search" [(ngModel)]="search" (ngModelChange)="page=1" type="search" placeholder="Rechercher par titre ou formateur..." class="rounded-xl bg-paper px-4 py-3 outline-none transition focus:ring-2 focus:ring-orange">
 
     <label class="sr-only" for="course-level">Filtrer par niveau</label>
-    <select id="course-level" [(ngModel)]="level" class="rounded-xl bg-paper px-4 py-3 outline-none">
+    <select id="course-level" [(ngModel)]="level" (ngModelChange)="page=1" class="rounded-xl border border-line bg-paper px-4 py-3 text-ink outline-none transition focus:border-orange focus:ring-2 focus:ring-orange/20">
       <option value="ALL">Tous les niveaux</option>
       <option value="BEGINNER">Débutant</option>
       <option value="INTERMEDIATE">Intermédiaire</option>
@@ -23,7 +23,7 @@
     </select>
 
     <label class="sr-only" for="course-language">Filtrer par langue</label>
-    <select id="course-language" [(ngModel)]="language" class="rounded-xl bg-paper px-4 py-3 outline-none">
+    <select id="course-language" [(ngModel)]="language" (ngModelChange)="page=1" class="rounded-xl border border-line bg-paper px-4 py-3 text-ink outline-none transition focus:border-orange focus:ring-2 focus:ring-orange/20">
       <option value="ALL">Toutes les langues</option>
       @for(item of languages; track item){<option [value]="item">{{item}}</option>}
     </select>
@@ -34,6 +34,14 @@
       <app-course-card class="js-reveal h-full" [course]="course" [inLibrary]="libraryIds().has(course.id)"/>
     }
   </div>
+
+  @if(totalPages > 1){
+    <nav class="mt-8 flex items-center justify-between" aria-label="Pagination du catalogue">
+      <button type="button" (click)="setPage(currentPage - 1)" [disabled]="currentPage === 1" class="rounded-full border border-line bg-cream px-4 py-2 text-sm font-semibold text-ink transition hover:border-orange hover:text-orange disabled:cursor-not-allowed disabled:opacity-40">← Précédent</button>
+      <span class="font-mono text-xs uppercase tracking-widest text-muted">Page {{currentPage}} / {{totalPages}}</span>
+      <button type="button" (click)="setPage(currentPage + 1)" [disabled]="currentPage === totalPages" class="rounded-full border border-line bg-cream px-4 py-2 text-sm font-semibold text-ink transition hover:border-orange hover:text-orange disabled:cursor-not-allowed disabled:opacity-40">Suivant →</button>
+    </nav>
+  }
 
   @if(!filtered.length){
     <div class="mt-8 rounded-2xl border border-dashed border-line p-12 text-center text-muted">Aucune formation ne correspond à votre recherche.</div>
