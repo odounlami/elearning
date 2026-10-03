@@ -60,6 +60,7 @@ export class Courses implements AfterViewInit {
 
   setPage(page: number): void {
     this.page = Math.max(1, Math.min(page, this.totalPages));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   ngAfterViewInit(): void {
