@@ -2,7 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  OnDestroy,
+  ViewChild,
   inject,
   signal,
 } from '@angular/core';
@@ -13,26 +13,26 @@ import { Course, Module } from '../../shared/models/course';
 import { ProgressBar } from '../../shared/components/progress-bar/progress-bar';
 import { revealPage } from '../../shared/utils/page-motion';
 
-declare const Hls: any;
-
 @Component({
   imports: [FormsModule, RouterLink, ProgressBar],
   templateUrl: './player.html',
 })
-export class Player implements AfterViewInit, OnDestroy {
+export class Player implements AfterViewInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly service = inject(CoursesService);
   private readonly host = inject(ElementRef<HTMLElement>);
 
-  private hls?: any;
+  @ViewChild('video') private video?: ElementRef<HTMLVideoElement>;
+  @ViewChild('audio') private audio?: ElementRef<HTMLAudioElement>;
 
   readonly course = signal<Course | null>(null);
   readonly current = signal<Module | null>(null);
   readonly completed = signal<Set<number>>(new Set());
-  readonly audioTracks = signal<{ id: number; language: string; label: string }[]>([]);
 
   audioLanguage = '';
+  private pendingAudioTime = 0;
+  private pendingAudioPlay = false;
 
   constructor() {
     this.route.paramMap.subscribe((params) => {
@@ -67,60 +67,19 @@ export class Player implements AfterViewInit, OnDestroy {
         }
 
         this.current.set(module);
-        this.audioLanguage = '';
-        this.audioTracks.set([]);
+        this.audioLanguage = module.audioTracks?.[0]?.language ?? course.language;
+        this.pendingAudioTime = 0;
+        this.pendingAudioPlay = false;
 
         if (module.id !== moduleId) {
           void this.router.navigate(['/learn', course.id, module.id], { replaceUrl: true });
         }
-
-        setTimeout(() => this.setupPlayer(), 0);
       },
     });
   }
 
   ngAfterViewInit(): void {
     revealPage(this.host);
-    setTimeout(() => this.setupPlayer(), 0);
-  }
-
-  ngOnDestroy(): void {
-    this.hls?.destroy();
-  }
-
-  private setupPlayer(): void {
-    const element = this.host.nativeElement.querySelector('#learning-video') as HTMLVideoElement | null;
-    const source = this.current()?.videoUrl;
-    if (!element || !source) return;
-
-    this.hls?.destroy();
-
-    if (typeof Hls !== 'undefined' && Hls.isSupported()) {
-      const hls = new Hls();
-      this.hls = hls;
-      hls.loadSource(source);
-      hls.attachMedia(element);
-
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        const tracks = hls.audioTracks.map((track: any, index: number) => ({
-          id: index,
-          language: track.lang === 'fra' ? 'Français' : track.lang === 'eng' ? 'English' : track.name,
-          label: track.name,
-        }));
-        this.audioTracks.set(tracks);
-
-        const first = tracks[0];
-        if (first) {
-          this.audioLanguage = first.language;
-          hls.audioTrack = first.id;
-        }
-      });
-      return;
-    }
-
-    if (element.canPlayType('application/vnd.apple.mpegurl')) {
-      element.src = source;
-    }
   }
 
   get progress(): number {
@@ -128,6 +87,14 @@ export class Player implements AfterViewInit, OnDestroy {
     return course?.modules.length
       ? Math.round((this.completed().size / course.modules.length) * 100)
       : 0;
+  }
+
+  get audioTracks() {
+    return this.current()?.audioTracks ?? [];
+  }
+
+  get selectedTrack() {
+    return this.audioTracks.find((track) => track.language === this.audioLanguage) ?? this.audioTracks[0];
   }
 
   get currentIndex(): number {
@@ -186,7 +153,59 @@ export class Player implements AfterViewInit, OnDestroy {
   }
 
   onAudioLanguageChange(): void {
-    const track = this.audioTracks().find((item) => item.language === this.audioLanguage);
-    if (track && this.hls) this.hls.audioTrack = track.id;
+    const video = this.video?.nativeElement;
+    const audio = this.audio?.nativeElement;
+    const track = this.selectedTrack;
+    if (!video || !audio || !track) return;
+
+    this.pendingAudioTime = video.currentTime;
+    this.pendingAudioPlay = !video.paused;
+
+    audio.pause();
+    audio.src = track.url;
+    audio.load();
+  }
+
+  onAudioCanPlay(): void {
+    const audio = this.audio?.nativeElement;
+    if (!audio) return;
+
+    const shouldPlay = this.pendingAudioPlay;
+    const targetTime = this.pendingAudioTime;
+    audio.currentTime = Math.min(
+      targetTime,
+      Number.isFinite(audio.duration) ? audio.duration : targetTime,
+    );
+    this.pendingAudioPlay = false;
+
+    if (shouldPlay) {
+      void audio.play().catch(() => undefined);
+    }
+  }
+
+  syncPlay(): void {
+    const audio = this.audio?.nativeElement;
+    if (audio) {
+      audio.currentTime = this.video?.nativeElement.currentTime ?? 0;
+      void audio.play().catch(() => undefined);
+    }
+  }
+
+  syncPause(): void {
+    this.audio?.nativeElement.pause();
+  }
+
+  syncSeek(): void {
+    const video = this.video?.nativeElement;
+    const audio = this.audio?.nativeElement;
+    if (video && audio) audio.currentTime = video.currentTime;
+  }
+
+  syncTime(): void {
+    const video = this.video?.nativeElement;
+    const audio = this.audio?.nativeElement;
+    if (video && audio && Math.abs(video.currentTime - audio.currentTime) > 0.35) {
+      audio.currentTime = video.currentTime;
+    }
   }
 }
