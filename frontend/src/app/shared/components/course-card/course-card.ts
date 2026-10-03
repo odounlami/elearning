@@ -10,4 +10,14 @@ import { Course } from '../../models/course';
 export class CourseCard {
   readonly course = input.required<Course>();
   readonly inLibrary = input(false);
+
+  get visualVariant(): string {
+    const variants = [
+      'bg-ink text-cream',
+      'bg-orange text-white',
+      'bg-paper-deep text-ink',
+      'bg-green text-cream',
+    ];
+    return variants[(this.course().id - 1) % variants.length];
+  }
 }
