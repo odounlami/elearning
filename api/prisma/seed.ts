@@ -8,9 +8,9 @@ const courses = [
   { title: 'Concevoir une API REST', domain: 'Backend & API', instructor: 'Oscar M.', language: 'Français', level: 'ADVANCED' as const, description: 'Concevez une API claire et robuste avec authentification, persistance PostgreSQL et bonnes pratiques REST.', modules: [['Modéliser les données', 1, 600], ['Authentification et sécurité', 2, 720], ['Structurer les endpoints', 3, 840]] },
 ];
 
-const VIDEO_URL = 'https://cdn.jsdelivr.net/gh/odounlami/elearning@main/media/demo_video.mp4';
-const ENGLISH_AUDIO_URL = 'https://cdn.jsdelivr.net/gh/odounlami/elearning@main/media/audio_en.mp3';
-const FRENCH_AUDIO_URL = 'https://cdn.jsdelivr.net/gh/odounlami/elearning@main/media/audio_fr.mp3';
+const VIDEO_URL = 'https://cdn.jsdelivr.net/gh/odounlami/elearning@1bf2f22/media/demo_video.mp4';
+const ENGLISH_AUDIO_URL = 'https://cdn.jsdelivr.net/gh/odounlami/elearning@1bf2f22/media/audio_en.mp3';
+const FRENCH_AUDIO_URL = 'https://cdn.jsdelivr.net/gh/odounlami/elearning@1bf2f22/media/audio_fr.mp3';
 
 async function main() {
   if (await prisma.course.count()) {
@@ -23,7 +23,7 @@ async function main() {
       where: { language: { contains: 'Français' } },
       data: { language: 'Français', url: FRENCH_AUDIO_URL },
     });
-    console.log('Seed updated: multilingual demo media restored.');
+    console.log('Seed updated: stable multilingual demo media restored.');
     return;
   }
 
