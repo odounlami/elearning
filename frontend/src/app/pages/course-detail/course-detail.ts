@@ -23,23 +23,26 @@ export class CourseDetail implements AfterViewInit {
 
   constructor() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-
-    this.service.get(id).subscribe((course) => {
-      this.course.set(course);
-
-      if (
-        this.auth.isAuthenticated() &&
-        localStorage.getItem('elearning_pending_course') === String(course.id)
-      ) {
-        localStorage.removeItem('elearning_pending_course');
-        this.enroll();
-      }
-    });
+    const loadCourse = () =>
+      this.service.get(id).subscribe((course) => {
+        this.course.set(course);
+        const pending = localStorage.getItem('elearning_pending_course') === String(course.id);
+        if (this.auth.isAuthenticated() && pending) {
+          localStorage.removeItem('elearning_pending_course');
+          this.enroll();
+        }
+      });
 
     if (this.auth.isAuthenticated()) {
-      this.service.library().subscribe((items) => {
-        this.enrolled = items.some((item) => item.course.id === id);
+      this.service.library().subscribe({
+        next: (items) => {
+          this.enrolled = items.some((item) => item.course.id === id);
+          loadCourse();
+        },
+        error: () => loadCourse(),
       });
+    } else {
+      loadCourse();
     }
   }
 
@@ -49,7 +52,7 @@ export class CourseDetail implements AfterViewInit {
 
   enroll(): void {
     const id = this.course()?.id;
-    if (!id) return;
+    if (!id || this.enrolled || this.enrolling) return;
 
     if (!this.auth.isAuthenticated()) {
       localStorage.setItem('elearning_pending_course', String(id));
@@ -59,14 +62,11 @@ export class CourseDetail implements AfterViewInit {
       return;
     }
 
-    if (this.enrolled) return;
-
     this.enrolling = true;
-
     this.service.enroll(id).subscribe({
       next: () => {
-        this.enrolling = false;
         this.enrolled = true;
+        this.enrolling = false;
       },
       error: () => {
         this.enrolling = false;
