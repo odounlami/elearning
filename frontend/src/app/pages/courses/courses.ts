@@ -20,21 +20,15 @@ export class Courses implements AfterViewInit {
 
   search = '';
   level: 'ALL' | Level = 'ALL';
-  domain = 'ALL';
   language = 'ALL';
 
   constructor() {
     this.service.list().subscribe((courses) => this.all.set(courses));
-
     if (this.auth.isAuthenticated()) {
       this.service.library().subscribe((items) => {
         this.libraryIds.set(new Set(items.map((item) => item.course.id)));
       });
     }
-  }
-
-  get domains(): string[] {
-    return [...new Set(this.all().map((course) => course.domain))].sort();
   }
 
   get languages(): string[] {
@@ -43,18 +37,14 @@ export class Courses implements AfterViewInit {
 
   get filtered(): Course[] {
     const term = this.search.trim().toLowerCase();
-
     return this.all().filter((course) => {
       const matchesSearch =
         !term ||
-        `${course.title} ${course.description} ${course.instructor} ${course.domain}`
-          .toLowerCase()
-          .includes(term);
+        `${course.title} ${course.instructor}`.toLowerCase().includes(term);
 
       return (
         matchesSearch &&
         (this.level === 'ALL' || course.level === this.level) &&
-        (this.domain === 'ALL' || course.domain === this.domain) &&
         (this.language === 'ALL' || course.language === this.language)
       );
     });
