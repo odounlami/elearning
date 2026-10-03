@@ -9,11 +9,20 @@ const courses = [
 ];
 
 const VIDEO_URL = 'https://media.w3.org/2010/05/sintel/trailer.mp4';
+const ENGLISH_AUDIO_URL = 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1860%20%28eng%29-Vealhurl-reported%20speech.wav';
+const FRENCH_AUDIO_URL = 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q150%20%28fra%29-Ben%20%28Mathsou%29-parle.wav';
 
 async function main() {
   if (await prisma.course.count()) {
     await prisma.module.updateMany({ data: { videoUrl: VIDEO_URL } });
-    await prisma.audioTrack.updateMany({ data: { url: VIDEO_URL } });
+    await prisma.audioTrack.updateMany({
+      where: { language: 'English' },
+      data: { url: ENGLISH_AUDIO_URL },
+    });
+    await prisma.audioTrack.updateMany({
+      where: { language: { contains: 'Français' } },
+      data: { url: FRENCH_AUDIO_URL },
+    });
     console.log('Seed updated: learning media refreshed.');
     return;
   }
@@ -35,8 +44,8 @@ async function main() {
             videoUrl: VIDEO_URL,
             audioTracks: {
               create: [
-                { language: 'English', url: VIDEO_URL },
-                { language: 'Français (simulation)', url: VIDEO_URL },
+                { language: 'English', url: ENGLISH_AUDIO_URL },
+                { language: 'Français (simulation)', url: FRENCH_AUDIO_URL },
               ],
             },
           })),

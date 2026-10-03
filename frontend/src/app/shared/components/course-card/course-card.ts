@@ -6,7 +6,7 @@ const VISUAL_VARIANTS = [
   'bg-ink text-cream',
   'bg-orange text-white',
   'bg-amber text-ink',
-  'bg-green text-white',
+  'bg-paper-deep text-ink',
 ] as const;
 
 @Component({ selector: 'app-course-card', imports: [RouterLink], templateUrl: './course-card.html' })

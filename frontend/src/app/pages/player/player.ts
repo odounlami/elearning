@@ -152,8 +152,15 @@ export class Player implements AfterViewInit {
     const video = this.video?.nativeElement;
     const audio = this.audio?.nativeElement;
     if (!video || !audio) return;
+
+    const wasPlaying = !video.paused;
+    audio.pause();
     audio.currentTime = video.currentTime;
-    if (!video.paused) void audio.play().catch(() => undefined);
+    audio.load();
+
+    if (wasPlaying) {
+      void audio.play().catch(() => undefined);
+    }
   }
 
   syncPlay(): void {

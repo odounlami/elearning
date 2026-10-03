@@ -8,7 +8,11 @@
     <section class="mt-10">
       <div class="js-reveal flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <h2 class="font-display text-2xl font-bold">Mes formations</h2>
-        <label class="w-full sm:max-w-80"><span class="sr-only">Rechercher dans ma bibliothèque</span><input [(ngModel)]="search" type="search" placeholder="Rechercher une formation ou un formateur..." class="w-full rounded-xl border border-line bg-white px-4 py-3 outline-none transition focus:ring-2 focus:ring-orange"></label>
+        <label class="relative block w-full sm:max-w-80">
+          <span class="sr-only">Rechercher dans ma bibliothèque</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true" class="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted fill-none stroke-current stroke-2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+          <input [(ngModel)]="search" type="search" placeholder="Rechercher une formation ou un formateur..." class="w-full rounded-xl border border-line bg-white py-3 pl-11 pr-4 outline-none transition focus:ring-2 focus:ring-orange">
+        </label>
       </div>
       @if(filteredItems.length){
         <div class="mt-5 grid gap-6">
