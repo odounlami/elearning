@@ -3,7 +3,6 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
-import { getAuthErrorMessage } from '../../core/auth/auth-error';
 import { revealPage } from '../../shared/utils/page-motion';
 
 @Component({
@@ -38,10 +37,6 @@ export class Register implements AfterViewInit {
   error = '';
   loading = false;
 
-  ngAfterViewInit() {
-    revealPage(this.host);
-  }
-
   async submit() {
     this.error = '';
 
@@ -60,22 +55,23 @@ export class Register implements AfterViewInit {
 
     this.loading = true;
 
-    try {
-      await firstValueFrom(
-        this.auth.register(name.trim(), email.trim(), password),
-      );
+    const result = await firstValueFrom(
+      this.auth.register(name.trim(), email.trim(), password),
+    );
 
-      const pending = localStorage.getItem('elearning_pending_course');
-      localStorage.removeItem('elearning_pending_course');
-      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    this.loading = false;
 
-      await this.router.navigateByUrl(
-        returnUrl || (pending ? `/courses/${pending}` : '/dashboard'),
-      );
-    } catch (error: unknown) {
-      this.error = getAuthErrorMessage(error, 'register');
-    } finally {
-      this.loading = false;
+    if (!result.success) {
+      this.error = result.message;
+      return;
     }
+
+    const pending = localStorage.getItem('elearning_pending_course');
+    localStorage.removeItem('elearning_pending_course');
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+
+    await this.router.navigateByUrl(
+      returnUrl || (pending ? `/courses/${pending}` : '/dashboard'),
+    );
   }
 }
