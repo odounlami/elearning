@@ -1,9 +1,9 @@
 <footer class="border-t border-ink/15 bg-paper-deep text-ink">
   <div class="mx-auto max-w-310 px-5 py-12 lg:px-8">
     <div class="grid gap-10 md:grid-cols-[1.3fr_.7fr_.7fr]">
-      <div><a routerLink="/" class="font-display text-3xl font-bold">Level <span class="text-orange">Up.</span></a><p class="mt-4 max-w-md text-sm leading-6 text-muted">Apprendre sérieusement. Sans se prendre trop au sérieux. Un chapitre à la fois.</p></div>
+      <div><a routerLink="/" class="font-display text-3xl font-bold">Level <span class="text-orange">UP</span></a><p class="mt-4 max-w-md text-sm leading-6 text-muted">Apprendre sérieusement. Sans se prendre trop au sérieux. Un chapitre à la fois.</p></div>
       <div><p class="font-mono text-[10px] font-semibold uppercase tracking-[.2em] text-orange">Explorer</p><div class="mt-4 grid gap-2 text-sm"><a routerLink="/courses" class="transition hover:text-orange">Formations</a><a routerLink="/" class="transition hover:text-orange">Accueil</a></div></div>
-      <div><p class="font-mono text-[10px] font-semibold uppercase tracking-[.2em] text-orange">Compte</p><div class="mt-4 grid gap-2 text-sm"><a routerLink="/login" class="transition hover:text-orange">Connexion</a><a routerLink="/register" class="transition hover:text-orange">Créer un compte</a></div></div>
+      <div><p class="font-mono text-[10px] font-semibold uppercase tracking-[.2em] text-orange">Compte</p><div class="mt-4 grid gap-2 text-sm">@if(auth.user()){<a routerLink="/dashboard" class="transition hover:text-orange">Ma bibliothèque</a><button type="button" (click)="auth.logout()" class="text-left transition hover:text-orange">Déconnexion</button>}@else{<a routerLink="/login" class="transition hover:text-orange">Connexion</a><a routerLink="/register" class="transition hover:text-orange">Créer un compte</a>}</div></div>
     </div>
     <div class="mt-10 flex flex-col gap-2 border-t border-ink/10 pt-5 text-xs text-muted sm:flex-row sm:items-center sm:justify-between"><span>© 2026 Level Up.</span><span>Lire · pratiquer · progresser</span></div>
   </div>
