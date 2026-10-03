@@ -1,6 +1,13 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Course } from '../../models/course';
+
+const VISUAL_VARIANTS = [
+  'bg-ink text-cream',
+  'bg-orange text-white',
+  'bg-paper-deep text-ink',
+  'bg-green text-cream',
+] as const;
 
 @Component({
   selector: 'app-course-card',
@@ -11,13 +18,7 @@ export class CourseCard {
   readonly course = input.required<Course>();
   readonly inLibrary = input(false);
 
-  get visualVariant(): string {
-    const variants = [
-      'bg-ink text-cream',
-      'bg-orange text-white',
-      'bg-paper-deep text-ink',
-      'bg-green text-cream',
-    ];
-    return variants[(this.course().id - 1) % variants.length];
-  }
+  readonly visualVariant = computed(
+    () => VISUAL_VARIANTS[(this.course().id - 1) % VISUAL_VARIANTS.length],
+  );
 }
