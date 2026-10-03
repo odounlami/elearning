@@ -89,7 +89,7 @@ export class Player implements AfterViewInit, OnDestroy {
   }
 
   private setupPlayer(): void {
-    const element = this.host.nativeElement.querySelector<HTMLVideoElement>('#learning-video');
+    const element = this.host.nativeElement.querySelector('#learning-video') as HTMLVideoElement | null;
     const source = this.current()?.videoUrl;
     if (!element || !source) return;
 
