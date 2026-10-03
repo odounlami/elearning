@@ -4,51 +4,103 @@
     <h1 class="mt-2 font-display text-5xl font-bold">Ma bibliothèque.</h1>
     <p class="mt-3 max-w-2xl text-lg text-muted">Retrouvez vos formations et reprenez là où vous vous êtes arrêté.</p>
   </div>
+
   @if(items().length || favorites().length){
     <section class="mt-10">
-      <div class="js-reveal flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <h2 class="font-display text-2xl font-bold">Mes formations</h2>
-        <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-          <label class="relative block w-full sm:w-72">
+      <div class="js-reveal flex flex-col gap-5">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 class="font-display text-2xl font-bold">Mes formations</h2>
+            <p class="mt-1 text-sm text-muted">{{matchingLibraryItems.length}} formation{{matchingLibraryItems.length > 1 ? 's' : ''}}</p>
+          </div>
+          <label class="relative block w-full sm:w-80">
             <span class="sr-only">Rechercher dans ma bibliothèque</span>
             <svg viewBox="0 0 24 24" aria-hidden="true" class="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted fill-none stroke-current stroke-2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
-            <input [(ngModel)]="search" type="search" placeholder="Rechercher..." class="w-full rounded-xl border border-line bg-white py-3 pl-11 pr-4 outline-none transition focus:ring-2 focus:ring-orange">
+            <input [(ngModel)]="search" (ngModelChange)="page=1" type="search" placeholder="Rechercher une formation..." class="w-full rounded-xl border border-line bg-cream py-3 pl-11 pr-4 text-sm outline-none transition focus:border-orange focus:ring-2 focus:ring-orange/20">
           </label>
-          <label class="block w-full sm:w-44">
-            <span class="sr-only">Filtrer la bibliothèque</span>
-            <select [(ngModel)]="libraryFilter" class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm font-semibold text-ink outline-none transition focus:ring-2 focus:ring-orange">
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 border-y border-line py-3">
+          <span class="mr-1 font-mono text-[10px] uppercase tracking-widest text-muted">Filtrer</span>
+          <label class="relative">
+            <span class="sr-only">Filtrer par type</span>
+            <select [(ngModel)]="libraryFilter" (ngModelChange)="page=1" class="appearance-none rounded-full border border-line bg-cream py-2.5 pl-4 pr-9 text-sm font-semibold text-ink outline-none transition hover:border-orange focus:border-orange focus:ring-2 focus:ring-orange/20">
               <option value="all">Toutes</option>
               <option value="favorites">Mes favoris</option>
             </select>
+            <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted">⌄</span>
+          </label>
+
+          <label class="relative">
+            <span class="sr-only">Filtrer par niveau</span>
+            <select [(ngModel)]="levelFilter" (ngModelChange)="page=1" class="appearance-none rounded-full border border-line bg-cream py-2.5 pl-4 pr-9 text-sm font-semibold text-ink outline-none transition hover:border-orange focus:border-orange focus:ring-2 focus:ring-orange/20">
+              <option value="all">Tous les niveaux</option>
+              <option value="BEGINNER">Débutant</option>
+              <option value="INTERMEDIATE">Intermédiaire</option>
+              <option value="ADVANCED">Avancé</option>
+            </select>
+            <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted">⌄</span>
+          </label>
+
+          <label class="relative ml-auto">
+            <span class="sr-only">Trier les formations</span>
+            <select [(ngModel)]="sortBy" (ngModelChange)="page=1" class="appearance-none rounded-full border border-line bg-cream py-2.5 pl-4 pr-9 text-sm font-semibold text-ink outline-none transition hover:border-orange focus:border-orange focus:ring-2 focus:ring-orange/20">
+              <option value="recent">Plus récentes</option>
+              <option value="progress">Progression</option>
+              <option value="title">A → Z</option>
+            </select>
+            <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted">⌄</span>
           </label>
         </div>
       </div>
+
       @if(filteredLibraryItems.length){
-        <div class="mt-5 grid gap-6">
+        <div class="mt-2 divide-y divide-line border-b border-line">
           @for(item of filteredLibraryItems; track item.course.id){
-            <article class="js-reveal overflow-hidden rounded-3xl border border-line bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
-              <div class="grid lg:grid-cols-[.8fr_1.2fr]">
-                <div class="flex min-h-55 flex-col justify-between bg-ink p-7 text-cream sm:p-8">
-                  <div><p class="font-mono text-[10px] uppercase tracking-widest text-amber">{{item.course.domain}}</p><p class="mt-2 font-mono text-[10px] uppercase tracking-widest text-cream/50">{{item.course.level}} · {{item.course.language}}</p></div>
-                  <div class="mt-10"><h3 class="font-display text-3xl font-bold leading-tight">{{item.course.title}}</h3><p class="mt-2 text-sm text-cream/60">{{item.course.instructor}}</p></div>
+            <article class="js-reveal group py-5">
+              <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(300px,.7fr)_auto] lg:items-center lg:gap-8">
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="font-mono text-[10px] uppercase tracking-widest text-orange">{{item.course.domain}}</span>
+                    @if(isFavorite(item.course.id)){
+                      <span class="rounded-full bg-paper-deep px-2 py-1 font-mono text-[9px] uppercase tracking-wider text-ink">Favori</span>
+                    }
+                  </div>
+                  <h3 class="mt-1 truncate font-display text-2xl font-bold">{{item.course.title}}</h3>
+                  <p class="mt-1 text-sm text-muted">{{item.course.instructor}} · {{getLevelLabel(item.course.level)}} · {{item.course.language}}</p>
                 </div>
-                <div class="flex flex-col justify-center border-l border-line bg-white p-7 sm:p-8">
-                  <p class="font-mono text-xs uppercase tracking-widest text-orange">Progression</p>
-                  <div class="mt-3 flex items-end justify-between gap-4"><strong class="font-display text-3xl">{{item.progress}}%</strong><span class="text-sm text-muted">{{item.completedModuleIds.length}} / {{item.course.modules.length}} modules</span></div>
-                  <div class="mt-4"><app-progress-bar [value]="item.progress"/></div>
-                  <a [routerLink]="['/learn', item.course.id, item.course.modules[item.completedModuleIds.length]?.id || item.course.modules[0]?.id]" class="mt-7 inline-flex w-fit rounded-full bg-orange px-5 py-3 text-sm font-semibold text-white transition hover:bg-orange-dark">{{ item.progress === 100 ? 'Revoir la formation' : item.progress === 0 ? 'Commencer →' : 'Continuer →' }}</a>
+
+                <div>
+                  <div class="flex items-center justify-between gap-4 text-sm">
+                    <span class="text-muted">{{item.completedModuleIds.length}} / {{item.course.modules.length}} modules</span>
+                    <strong class="font-mono text-xs">{{item.progress}}%</strong>
+                  </div>
+                  <div class="mt-2"><app-progress-bar [value]="item.progress"/></div>
                 </div>
+
+                <a [routerLink]="['/learn', item.course.id, item.course.modules[item.completedModuleIds.length]?.id || item.course.modules[0]?.id]" class="inline-flex w-fit shrink-0 rounded-full border border-line bg-cream px-5 py-2.5 text-sm font-semibold text-ink transition hover:border-orange hover:text-orange">
+                  {{ item.progress === 100 ? 'Revoir →' : item.progress === 0 ? 'Commencer →' : 'Continuer →' }}
+                </a>
               </div>
             </article>
           }
         </div>
+
+        @if(totalPages > 1){
+          <nav class="mt-7 flex items-center justify-between" aria-label="Pagination de la bibliothèque">
+            <button type="button" (click)="setPage(currentPage - 1)" [disabled]="!hasPreviousPage" class="rounded-full border border-line px-4 py-2 text-sm font-semibold text-ink transition hover:border-orange hover:text-orange disabled:cursor-not-allowed disabled:opacity-40">← Précédent</button>
+            <span class="font-mono text-xs uppercase tracking-widest text-muted">Page {{currentPage}} / {{totalPages}}</span>
+            <button type="button" (click)="setPage(currentPage + 1)" [disabled]="!hasNextPage" class="rounded-full border border-line px-4 py-2 text-sm font-semibold text-ink transition hover:border-orange hover:text-orange disabled:cursor-not-allowed disabled:opacity-40">Suivant →</button>
+          </nav>
+        }
       } @else {
         <div class="mt-5 rounded-2xl border border-dashed border-line p-8 text-center text-muted">
           @if(libraryFilter === 'favorites') {
             <p class="font-display text-xl font-bold text-ink">Aucun favori pour le moment.</p>
             <p class="mt-2">Ajoutez une formation à vos favoris depuis son détail.</p>
           } @else {
-            <p>Aucune formation ne correspond à votre recherche.</p>
+            <p class="font-display text-xl font-bold text-ink">Aucune formation trouvée.</p>
+            <p class="mt-2">Essayez une autre recherche ou modifiez vos filtres.</p>
           }
         </div>
       }
