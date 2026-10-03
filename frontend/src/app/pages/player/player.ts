@@ -41,9 +41,19 @@ export class Player implements AfterViewInit {
       this.service.get(courseId).subscribe({
         next: (course) => {
           this.course.set(course);
-          const module = course.modules.find((item) => item.id === moduleId) ?? course.modules[0];
-
+          const requested = course.modules.find((item) => item.id === moduleId);
+          const module = requested ?? course.modules[0];
           if (!module) return;
+
+          const done = this.completed();
+          const moduleIndex = course.modules.findIndex((item) => item.id === module.id);
+          const previous = moduleIndex > 0 ? course.modules[moduleIndex - 1] : null;
+          const unlocked = !previous || done.has(previous.id);
+
+          if (!unlocked) {
+            void this.router.navigate(['/learn', course.id, previous!.id], { replaceUrl: true });
+            return;
+          }
 
           this.current.set(module);
           this.audioLanguage = module.audioTracks?.[0]?.language ?? course.language;
@@ -84,8 +94,7 @@ export class Player implements AfterViewInit {
   }
 
   get selectedTrack() {
-    return this.audioTracks.find((track) => track.language === this.audioLanguage)
-      ?? this.audioTracks[0];
+    return this.audioTracks.find((track) => track.language === this.audioLanguage) ?? this.audioTracks[0];
   }
 
   get currentIndex(): number {
@@ -103,6 +112,18 @@ export class Player implements AfterViewInit {
     return !!course && this.currentIndex >= 0 && this.currentIndex < course.modules.length - 1;
   }
 
+  get canGoNext(): boolean {
+    const module = this.current();
+    return !!module && this.completed().has(module.id);
+  }
+
+  isUnlocked(module: Module): boolean {
+    const course = this.course();
+    if (!course) return false;
+    const index = course.modules.findIndex((item) => item.id === module.id);
+    return index <= 0 || this.completed().has(course.modules[index - 1].id);
+  }
+
   complete(): void {
     const module = this.current();
     if (!module || this.completed().has(module.id)) return;
@@ -115,6 +136,7 @@ export class Player implements AfterViewInit {
   }
 
   selectModule(module: Module): void {
+    if (!this.isUnlocked(module)) return;
     const course = this.course();
     if (!course) return;
     void this.router.navigate(['/learn', course.id, module.id]);
@@ -129,7 +151,7 @@ export class Player implements AfterViewInit {
 
   next(): void {
     const course = this.course();
-    if (course && this.hasNext) {
+    if (course && this.hasNext && this.canGoNext) {
       this.selectModule(course.modules[this.currentIndex + 1]);
     }
   }
@@ -138,11 +160,8 @@ export class Player implements AfterViewInit {
     const video = this.video?.nativeElement;
     const audio = this.audio?.nativeElement;
     if (!video || !audio) return;
-
     audio.currentTime = video.currentTime;
-    if (!video.paused) {
-      void audio.play().catch(() => undefined);
-    }
+    if (!video.paused) void audio.play().catch(() => undefined);
   }
 
   syncPlay(): void {
