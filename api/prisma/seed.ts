@@ -8,9 +8,9 @@ const courses = [
   { title: 'Concevoir une API REST', domain: 'Backend & API', instructor: 'Oscar M.', language: 'Français', level: 'ADVANCED' as const, description: 'Concevez une API claire et robuste avec authentification, persistance PostgreSQL et bonnes pratiques REST.', modules: [['Modéliser les données', 1, 600], ['Authentification et sécurité', 2, 720], ['Structurer les endpoints', 3, 840]] },
 ];
 
-const VIDEO_URL = 'https://media.w3.org/2010/05/sintel/trailer.mp4';
-const ENGLISH_AUDIO_URL = 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1860%20%28eng%29-Vealhurl-reported%20speech.wav';
-const FRENCH_AUDIO_URL = 'https://upload.wikimedia.org/wikipedia/commons/b/ba/Fr-prononciation.ogg';
+const VIDEO_URL = 'https://stream.broadpeak.io/a3eb043e7bf775de3923ab3d322ffd8e/fabre/usp-playbook/TOS/hls/main.m3u8';
+const ENGLISH_AUDIO_URL = 'https://stream.broadpeak.io/a3eb043e7bf775de3923ab3d322ffd8e/fabre/usp-playbook/TOS/hls/TOS_aac_128k_eng.m3u8';
+const FRENCH_AUDIO_URL = 'https://stream.broadpeak.io/a3eb043e7bf775de3923ab3d322ffd8e/fabre/usp-playbook/TOS/hls/TOS_aac_128k_fra.m3u8';
 
 async function main() {
   if (await prisma.course.count()) {
@@ -23,7 +23,7 @@ async function main() {
       where: { language: { contains: 'Français' } },
       data: { language: 'Français', url: FRENCH_AUDIO_URL },
     });
-    console.log('Seed updated: learning media restored.');
+    console.log('Seed updated: multilingual Tears of Steel media restored.');
     return;
   }
 
