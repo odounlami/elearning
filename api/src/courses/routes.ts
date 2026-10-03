@@ -48,7 +48,7 @@ coursesRouter.get('/courses/:id', async (req, res) => {
   const enrollment = userId
     ? await prisma.enrollment.findUnique({
         where: { userId_courseId: { userId, courseId: id } },
-        select: { id: true },
+        select: { userId: true },
       })
     : null;
 
