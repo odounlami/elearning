@@ -38,43 +38,39 @@ export class Player implements AfterViewInit {
       const moduleId = Number(params.get('moduleId'));
       if (!Number.isInteger(courseId)) return;
 
-      this.service.get(courseId).subscribe({
-        next: (course) => {
-          this.course.set(course);
-          const requested = course.modules.find((item) => item.id === moduleId);
-          const module = requested ?? course.modules[0];
-          if (!module) return;
-
-          const done = this.completed();
-          const moduleIndex = course.modules.findIndex((item) => item.id === module.id);
-          const previous = moduleIndex > 0 ? course.modules[moduleIndex - 1] : null;
-          const unlocked = !previous || done.has(previous.id);
-
-          if (!unlocked) {
-            void this.router.navigate(['/learn', course.id, previous!.id], { replaceUrl: true });
-            return;
-          }
-
-          this.current.set(module);
-          this.audioLanguage = module.audioTracks?.[0]?.language ?? course.language;
-
-          if (module.id !== moduleId) {
-            void this.router.navigate(['/learn', course.id, module.id], { replaceUrl: true });
-          }
-        },
-      });
-    });
-
-    this.route.paramMap.subscribe((params) => {
-      const courseId = Number(params.get('courseId'));
-      if (!Number.isInteger(courseId)) return;
-
       this.service.library().subscribe({
         next: (items) => {
           const enrollment = items.find((item) => item.course.id === courseId);
           this.completed.set(new Set(enrollment?.completedModuleIds ?? []));
+          this.loadCourse(courseId, moduleId);
         },
       });
+    });
+  }
+
+  private loadCourse(courseId: number, moduleId: number): void {
+    this.service.get(courseId).subscribe({
+      next: (course) => {
+        this.course.set(course);
+        const requested = course.modules.find((item) => item.id === moduleId);
+        const module = requested ?? course.modules[0];
+        if (!module) return;
+
+        const moduleIndex = course.modules.findIndex((item) => item.id === module.id);
+        const previous = moduleIndex > 0 ? course.modules[moduleIndex - 1] : null;
+
+        if (previous && !this.completed().has(previous.id)) {
+          void this.router.navigate(['/learn', course.id, previous.id], { replaceUrl: true });
+          return;
+        }
+
+        this.current.set(module);
+        this.audioLanguage = module.audioTracks?.[0]?.language ?? course.language;
+
+        if (module.id !== moduleId) {
+          void this.router.navigate(['/learn', course.id, module.id], { replaceUrl: true });
+        }
+      },
     });
   }
 
@@ -144,16 +140,12 @@ export class Player implements AfterViewInit {
 
   previous(): void {
     const course = this.course();
-    if (course && this.hasPrevious) {
-      this.selectModule(course.modules[this.currentIndex - 1]);
-    }
+    if (course && this.hasPrevious) this.selectModule(course.modules[this.currentIndex - 1]);
   }
 
   next(): void {
     const course = this.course();
-    if (course && this.hasNext && this.canGoNext) {
-      this.selectModule(course.modules[this.currentIndex + 1]);
-    }
+    if (course && this.hasNext && this.canGoNext) this.selectModule(course.modules[this.currentIndex + 1]);
   }
 
   onAudioLanguageChange(): void {
