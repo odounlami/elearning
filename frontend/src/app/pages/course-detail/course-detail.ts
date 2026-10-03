@@ -58,7 +58,7 @@ export class CourseDetail implements AfterViewInit {
     }
     this.enrolling = true;
     this.service.enroll(id).subscribe({
-      next: () => { this.enrolled = true; this.enrolling = false; },
+      next: () => { this.enrolled.set(true); this.enrolling = false; },
       error: () => { this.enrolling = false; },
     });
   }
