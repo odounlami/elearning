@@ -20,8 +20,7 @@ export class Dashboard implements AfterViewInit {
   }
   ngAfterViewInit(){revealPage(this.host);}
   get favoriteOnly(): Course[] {
-    const enrolledIds = new Set(this.items().map(({ course }) => course.id));
-    return this.favorites().filter((course) => !enrolledIds.has(course.id));
+    return this.favorites();
   }
 
   get filteredFavorites(): Course[] {
