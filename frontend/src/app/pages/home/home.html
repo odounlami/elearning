@@ -1,49 +1,91 @@
 <main #page class="overflow-hidden">
-  <section class="relative">
-    <div class="pointer-events-none absolute -right-32 top-10 h-80 w-80 rounded-full bg-amber/20 blur-3xl"></div>
-    <div class="mx-auto grid max-w-310 gap-12 px-5 py-14 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:px-8 lg:py-22">
+  <section class="relative isolate">
+    <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-130 bg-[radial-gradient(circle_at_75%_35%,rgba(201,107,44,.18),transparent_38%),radial-gradient(circle_at_15%_20%,rgba(228,163,58,.16),transparent_30%)]"></div>
+    <div class="mx-auto grid max-w-310 gap-12 px-5 py-12 lg:grid-cols-[1fr_.9fr] lg:items-center lg:px-8 lg:py-20">
       <div class="js-reveal">
-        <p class="font-mono text-xs font-semibold uppercase tracking-[.22em] text-orange">Apprendre autrement</p>
-        <h1 class="mt-5 max-w-3xl font-display text-5xl font-bold leading-[1.02] sm:text-6xl lg:text-7xl">Ouvrez un nouveau chapitre.</h1>
-        <p class="mt-6 max-w-xl text-lg leading-8 text-muted">Développez de nouvelles compétences, à votre rythme.</p>
-        <div class="mt-9 flex flex-wrap items-center gap-4">
-          <a routerLink="/courses" class="rounded-full bg-orange px-6 py-3.5 font-semibold text-white shadow-lg shadow-orange/15 transition hover:-translate-y-0.5 hover:bg-orange-dark">Explorer les formations</a>
-          <span class="font-mono text-xs uppercase tracking-widest text-muted">Lire · pratiquer · progresser</span>
+        <p class="font-mono text-xs font-semibold uppercase tracking-[.24em] text-orange">Apprendre autrement</p>
+        <h1 class="mt-5 max-w-3xl font-display text-5xl font-bold leading-[.98] sm:text-6xl lg:text-7xl">Ouvrez un nouveau chapitre.</h1>
+        <p class="mt-6 max-w-xl text-lg leading-8 text-muted">Développez de nouvelles compétences, à votre rythme. Apprenez une idée, mettez-la en pratique, puis passez à la suivante.</p>
+        <div class="mt-8 flex flex-wrap items-center gap-4">
+          <a routerLink="/courses" class="rounded-full bg-orange px-6 py-3.5 font-semibold text-white shadow-xl shadow-orange/20 transition hover:-translate-y-1 hover:bg-orange-dark">Explorer les formations</a>
+          <span class="font-mono text-xs uppercase tracking-[.16em] text-muted">Lire · pratiquer · progresser</span>
         </div>
       </div>
-      <div class="relative mx-auto h-90 w-full max-w-120">
-        <div class="js-float absolute left-1/2 top-1/2 h-64 w-48 -translate-x-1/2 -translate-y-1/2 rotate-6 rounded-2xl bg-orange p-6 shadow-2xl">
-          <span class="font-mono text-xs uppercase tracking-widest text-white/70">Nouveau chapitre</span>
-          <h2 class="mt-10 font-display text-4xl font-bold leading-tight text-white">Apprendre,<br>puis faire.</h2>
+
+      <div class="relative mx-auto h-105 w-full max-w-125">
+        <div class="absolute left-1/2 top-1/2 h-85 w-70 -translate-x-1/2 -translate-y-1/2 rounded-[2.5rem] bg-amber/20 blur-2xl"></div>
+
+        <div class="js-book absolute left-1/2 top-1/2 z-20 h-78 w-52 -translate-x-1/2 -translate-y-1/2 rotate-[-4deg] rounded-r-2xl rounded-l-md bg-orange p-7 text-white shadow-[18px_22px_0_rgba(45,33,25,.14),0_24px_45px_rgba(45,33,25,.2)] transition-transform">
+          <div class="absolute left-0 top-0 h-full w-4 rounded-l-md bg-orange-dark/80"></div>
+          <div class="h-full rounded-r-xl border border-white/25 p-4">
+            <span class="font-mono text-[10px] uppercase tracking-[.2em] text-white/70">Confiance · 01</span>
+            <h2 class="mt-10 font-display text-4xl font-bold leading-[1.02]">Apprendre,<br>puis faire.</h2>
+            <div class="mt-10 h-px bg-white/30"></div>
+            <span class="mt-3 block font-mono text-[9px] uppercase tracking-[.18em] text-white/70">Un chapitre à la fois</span>
+          </div>
         </div>
-        <div class="js-float absolute left-4 top-12 h-55 w-35 -rotate-12 rounded-xl border border-line bg-cream p-4 shadow-xl">
-          <span class="font-display text-xl font-bold">Idées</span>
-          <span class="mt-20 block font-mono text-[10px] uppercase tracking-widest text-muted">01 / notes</span>
+
+        <div class="js-float absolute left-2 top-14 z-10 h-64 w-44 -rotate-[15deg] rounded-r-xl rounded-l-md bg-ink p-5 text-cream shadow-[12px_18px_0_rgba(45,33,25,.12),0_18px_35px_rgba(45,33,25,.16)]">
+          <div class="absolute left-0 top-0 h-full w-3 rounded-l-md bg-black/20"></div>
+          <span class="font-mono text-[10px] uppercase tracking-[.2em] text-amber">Chapitre 02</span>
+          <h3 class="mt-16 font-display text-2xl font-bold leading-tight">Pratique<br>avant théorie.</h3>
         </div>
-        <div class="js-float absolute bottom-4 right-3 h-55 w-35 rotate-12 rounded-xl bg-ink p-4 shadow-xl">
-          <span class="font-mono text-xs uppercase tracking-widest text-amber">02</span>
-          <span class="mt-16 block font-display text-xl font-bold text-cream">Pratique</span>
+
+        <div class="js-float absolute bottom-5 right-0 z-30 h-60 w-40 rotate-[13deg] rounded-r-xl rounded-l-md bg-cream p-5 text-ink shadow-[10px_16px_0_rgba(45,33,25,.1),0_16px_30px_rgba(45,33,25,.14)]">
+          <div class="absolute left-0 top-0 h-full w-3 rounded-l-md bg-paper-deep"></div>
+          <span class="font-mono text-[10px] uppercase tracking-[.2em] text-orange">Notes</span>
+          <h3 class="mt-12 font-display text-2xl font-bold leading-tight">Une idée<br>à la fois.</h3>
+          <span class="mt-10 block text-3xl">✦</span>
         </div>
+
+        <span class="js-reveal absolute -right-2 top-4 rounded-full border border-line bg-cream px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-muted shadow-sm">01 · ouvrir</span>
+        <span class="js-reveal absolute bottom-1 left-2 rounded-full bg-ink px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-cream shadow-sm">02 · pratiquer</span>
       </div>
     </div>
   </section>
 
-  <section class="bg-paper-deep/40">
-    <div class="mx-auto max-w-310 px-5 py-14 lg:px-8 lg:py-18">
+  <section class="border-y border-line bg-paper-deep/35">
+    <div class="mx-auto grid max-w-310 gap-6 px-5 py-10 sm:grid-cols-3 lg:px-8">
+      <div class="js-reveal border-l-2 border-orange pl-5"><strong class="font-display text-2xl">À votre rythme.</strong><p class="mt-1 text-sm leading-6 text-muted">Reprenez vos chapitres quand vous voulez.</p></div>
+      <div class="js-reveal border-l-2 border-amber pl-5"><strong class="font-display text-2xl">Concret.</strong><p class="mt-1 text-sm leading-6 text-muted">Des notions pensées pour être utilisées, pas seulement mémorisées.</p></div>
+      <div class="js-reveal border-l-2 border-ink pl-5"><strong class="font-display text-2xl">Progressif.</strong><p class="mt-1 text-sm leading-6 text-muted">Un parcours clair, module après module.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="mx-auto max-w-310 px-5 py-16 lg:px-8 lg:py-22">
       <div class="js-reveal flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p class="font-mono text-xs uppercase tracking-widest text-orange">Le catalogue</p>
-          <h2 class="mt-2 font-display text-3xl font-bold">Commencez par une idée.</h2>
-        </div>
-        <a routerLink="/courses" class="text-sm font-semibold text-orange">Voir tout le catalogue →</a>
+        <div><p class="font-mono text-xs uppercase tracking-widest text-orange">Le catalogue</p><h2 class="mt-2 font-display text-4xl font-bold">Commencez par une idée.</h2><p class="mt-3 max-w-2xl leading-7 text-muted">Choisissez un sujet, ouvrez le chapitre et avancez sans vous perdre.</p></div>
+        <a routerLink="/courses" class="font-semibold text-orange">Voir tout le catalogue →</a>
       </div>
-      @if(courses().length){
-        <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          @for(course of courses();track course.id){<app-course-card class="js-reveal" [course]="course"/>}
-        </div>
-      } @else {
-        <div class="mt-8 rounded-2xl border border-dashed border-line p-10 text-center text-muted">Le catalogue arrive bientôt.</div>
-      }
+      @if(courses().length){<div class="mt-9 grid gap-6 md:grid-cols-2 lg:grid-cols-3">@for(course of courses();track course.id){<app-course-card class="js-reveal" [course]="course"/>}</div>} @else {<div class="mt-9 rounded-2xl border border-dashed border-line p-10 text-center text-muted">Le catalogue arrive bientôt.</div>}
+    </div>
+  </section>
+
+  <section class="bg-ink text-cream">
+    <div class="mx-auto grid max-w-310 gap-12 px-5 py-16 lg:grid-cols-[.8fr_1.2fr] lg:px-8 lg:py-22">
+      <div class="js-reveal">
+        <p class="font-mono text-xs uppercase tracking-widest text-amber">La méthode</p>
+        <h2 class="mt-3 font-display text-4xl font-bold leading-tight">Pas besoin de tout apprendre d'un coup.</h2>
+      </div>
+      <div class="grid gap-8 sm:grid-cols-3">
+        <article class="js-reveal border-t border-white/20 pt-5"><span class="font-mono text-xs text-amber">01</span><h3 class="mt-5 font-display text-2xl font-bold">Ouvrir</h3><p class="mt-3 text-sm leading-6 text-cream/65">Trouvez une formation qui correspond à ce que vous voulez savoir faire.</p></article>
+        <article class="js-reveal border-t border-white/20 pt-5"><span class="font-mono text-xs text-amber">02</span><h3 class="mt-5 font-display text-2xl font-bold">Pratiquer</h3><p class="mt-3 text-sm leading-6 text-cream/65">Avancez par petits modules et passez rapidement de la notion à l'action.</p></article>
+        <article class="js-reveal border-t border-white/20 pt-5"><span class="font-mono text-xs text-amber">03</span><h3 class="mt-5 font-display text-2xl font-bold">Continuer</h3><p class="mt-3 text-sm leading-6 text-cream/65">Votre bibliothèque garde votre progression pour reprendre là où vous étiez.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="mx-auto max-w-310 px-5 py-16 lg:px-8 lg:py-22">
+      <div class="js-reveal relative overflow-hidden rounded-[2rem] bg-orange p-8 text-white shadow-2xl sm:p-12">
+        <div class="absolute -right-10 -top-16 h-48 w-48 rotate-12 rounded-2xl border-8 border-white/15"></div>
+        <div class="absolute -bottom-20 right-30 h-40 w-28 -rotate-12 rounded-xl border-8 border-white/10"></div>
+        <p class="font-mono text-xs uppercase tracking-widest text-white/70">Votre prochain chapitre</p>
+        <h2 class="mt-4 max-w-2xl font-display text-4xl font-bold leading-tight sm:text-5xl">Une compétence de plus. Un chapitre de plus.</h2>
+        <p class="mt-4 max-w-xl leading-7 text-white/75">Explorez le catalogue et trouvez quelque chose que vous avez envie de comprendre aujourd'hui.</p>
+        <a routerLink="/courses" class="mt-7 inline-flex rounded-full bg-cream px-6 py-3.5 font-semibold text-ink transition hover:-translate-y-1">Ouvrir le catalogue</a>
+      </div>
     </div>
   </section>
 </main>

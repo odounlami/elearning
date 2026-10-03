@@ -15,11 +15,20 @@ export function revealPage(host: ElementRef<HTMLElement>): void {
 
 export function floatBooks(host: ElementRef<HTMLElement>): void {
   const root = host.nativeElement;
-  gsap.to(root.querySelectorAll('.js-float'), {
-    y: -9,
-    rotation: '+=1.5',
-    duration: 2.2,
-    stagger: 0.2,
+  const books = root.querySelectorAll('.js-float');
+  gsap.to(books, {
+    y: -10,
+    rotation: '+=1.8',
+    duration: 2.4,
+    stagger: 0.22,
+    repeat: -1,
+    yoyo: true,
+    ease: 'sine.inOut',
+  });
+  gsap.to(root.querySelector('.js-book'), {
+    y: -5,
+    rotation: '+=1',
+    duration: 2.8,
     repeat: -1,
     yoyo: true,
     ease: 'sine.inOut',
