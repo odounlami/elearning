@@ -37,6 +37,10 @@ export class Register implements AfterViewInit {
   error = '';
   loading = false;
 
+  ngAfterViewInit() {
+    revealPage(this.host);
+  }
+
   async submit() {
     this.error = '';
 
