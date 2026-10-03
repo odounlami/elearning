@@ -25,6 +25,7 @@ coursesRouter.get('/courses', async (_req, res) => {
     include: {
       modules: {
         orderBy: { position: 'asc' },
+        include: { audioTracks: true },
       },
     },
     orderBy: { id: 'asc' },
