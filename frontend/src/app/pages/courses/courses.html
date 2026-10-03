@@ -39,7 +39,7 @@
     <nav class="mt-8 flex items-center justify-center gap-2" aria-label="Pagination du catalogue">
       <button type="button" (click)="setPage(currentPage - 1)" [disabled]="currentPage === 1" class="rounded-full border border-line bg-cream px-4 py-2 text-sm font-semibold text-ink transition hover:border-orange hover:text-orange disabled:cursor-not-allowed disabled:opacity-40">←</button>
       @for(pageNumber of [].constructor(totalPages); track $index) {
-        <button type="button" (click)="setPage($index + 1)" [attr.aria-current]="currentPage === $index + 1 ? 'page' : null" [class.bg-ink]="currentPage === $index + 1" [class.text-cream]="currentPage === $index + 1" class="h-9 min-w-9 rounded-full border border-line px-3 text-sm font-semibold text-ink transition hover:border-orange hover:text-orange">{{$index + 1}}</button>
+        <button type="button" (click)="setPage($index + 1)" [attr.aria-current]="currentPage === $index + 1 ? 'page' : null" [class]="currentPage === $index + 1 ? 'h-9 min-w-9 rounded-full border border-ink bg-ink px-3 text-sm font-semibold text-cream transition hover:border-orange hover:bg-orange' : 'h-9 min-w-9 rounded-full border border-line bg-cream px-3 text-sm font-semibold text-ink transition hover:border-orange hover:text-orange'">{{$index + 1}}</button>
       }
       <button type="button" (click)="setPage(currentPage + 1)" [disabled]="currentPage === totalPages" class="rounded-full border border-line bg-cream px-4 py-2 text-sm font-semibold text-ink transition hover:border-orange hover:text-orange disabled:cursor-not-allowed disabled:opacity-40">→</button>
     </nav>
