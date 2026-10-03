@@ -1,5 +1,3 @@
-import { HttpErrorResponse } from '@angular/common/http';
-
 type AuthContext = 'login' | 'register';
 
 interface ValidationDetails {
@@ -12,16 +10,15 @@ interface ApiErrorBody {
   details?: ValidationDetails;
 }
 
+interface HttpLikeError {
+  status?: number;
+  error?: ApiErrorBody | null;
+}
+
 export function getAuthErrorMessage(error: unknown, context: AuthContext): string {
-  if (!(error instanceof HttpErrorResponse)) {
-    return 'Une erreur inattendue est survenue. Veuillez réessayer.';
-  }
-
-  if (error.status === 0) {
-    return 'Impossible de joindre le serveur. Vérifiez que l’API est démarrée puis réessayez.';
-  }
-
-  const body = error.error as ApiErrorBody | null | undefined;
+  const httpError = error as HttpLikeError | null | undefined;
+  const status = httpError?.status ?? 0;
+  const body = httpError?.error;
 
   switch (body?.error) {
     case 'INVALID_CREDENTIALS':
@@ -34,28 +31,32 @@ export function getAuthErrorMessage(error: unknown, context: AuthContext): strin
       return 'Le serveur rencontre un problème. Réessayez dans quelques instants.';
     case 'TOO_MANY_REQUESTS':
       return 'Trop de tentatives. Attendez quelques instants avant de réessayer.';
-    default:
-      if (error.status === 400) {
-        return context === 'register'
-          ? 'Les informations saisies sont invalides. Vérifiez les champs.'
-          : 'Les informations de connexion sont invalides.';
-      }
-      if (error.status === 401) {
-        return context === 'login'
-          ? 'Email ou mot de passe incorrect.'
-          : 'Votre session n’est pas autorisée.';
-      }
-      if (error.status === 409) {
-        return 'Cette adresse email est déjà utilisée.';
-      }
-      if (error.status === 429) {
-        return 'Trop de tentatives. Attendez quelques instants avant de réessayer.';
-      }
-      if (error.status >= 500) {
-        return 'Le serveur rencontre un problème. Réessayez dans quelques instants.';
-      }
-      return 'Une erreur est survenue. Veuillez réessayer.';
   }
+
+  if (status === 0) {
+    return 'Impossible de joindre le serveur. Vérifiez que l’API est démarrée puis réessayez.';
+  }
+  if (status === 400) {
+    return context === 'register'
+      ? 'Les informations saisies sont invalides. Vérifiez les champs.'
+      : 'Les informations de connexion sont invalides.';
+  }
+  if (status === 401) {
+    return context === 'login'
+      ? 'Email ou mot de passe incorrect.'
+      : 'Votre session n’est pas autorisée.';
+  }
+  if (status === 409) {
+    return 'Cette adresse email est déjà utilisée.';
+  }
+  if (status === 429) {
+    return 'Trop de tentatives. Attendez quelques instants avant de réessayer.';
+  }
+  if (status >= 500) {
+    return 'Le serveur rencontre un problème. Réessayez dans quelques instants.';
+  }
+
+  return 'Une erreur est survenue. Veuillez réessayer.';
 }
 
 function getValidationMessage(
