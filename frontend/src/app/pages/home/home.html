@@ -1,6 +1,6 @@
 <main #page class="overflow-hidden">
-  <section class="relative isolate">
-    <div class="mx-auto grid max-w-310 gap-12 px-5 py-12 lg:grid-cols-[1fr_.9fr] lg:items-center lg:px-8 lg:py-20">
+  <section class="relative isolate lg:min-h-[calc(100svh-4.5rem)] lg:flex lg:items-center">
+    <div class="mx-auto grid w-full max-w-310 gap-10 px-5 py-10 sm:gap-12 lg:grid-cols-[1fr_.95fr] lg:items-center lg:px-8 lg:py-12">
       <div class="js-reveal">
         <p class="font-mono text-xs font-semibold uppercase tracking-[.24em] text-orange">Apprendre autrement</p>
         <h1 class="mt-5 max-w-3xl font-display text-5xl font-bold leading-[.98] sm:text-6xl lg:text-7xl">Ouvrez un nouveau chapitre.</h1>
@@ -11,13 +11,13 @@
         </div>
       </div>
 
-      <div class="relative mx-auto h-105 w-full max-w-125">
+      <div class="relative mx-auto h-110 w-full max-w-130 sm:h-120 lg:h-135">
         <div class="absolute left-1/2 top-1/2 h-80 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-paper-deep/45 blur-3xl"></div>
 
         <div class="js-book-motion absolute left-1/2 top-1/2 z-20 h-78 w-52 -translate-x-1/2 -translate-y-1/2">
-          <div class="js-book h-full w-full rotate-[-4deg] rounded-r-2xl rounded-l-md bg-cream p-7 text-ink shadow-[18px_22px_0_rgba(45,33,25,.12),0_24px_45px_rgba(45,33,25,.16)]">
-            <div class="absolute left-0 top-0 h-full w-4 rounded-l-md bg-orange"></div>
-            <div class="h-full rounded-r-xl border border-line p-4">
+          <div class="js-book relative h-full w-full rotate-[-4deg] rounded-r-2xl rounded-l-md bg-cream p-7 text-ink shadow-[18px_22px_0_rgba(45,33,25,.12),0_24px_45px_rgba(45,33,25,.16)]">
+            <div class="absolute inset-y-0 left-0 z-0 w-4 rounded-l-md bg-orange"></div>
+            <div class="relative z-10 h-full rounded-r-xl border border-line p-4">
               <span class="font-mono text-[10px] uppercase tracking-[.2em] text-orange">Confiance · 01</span>
               <h2 class="mt-10 font-display text-4xl font-bold leading-[1.02]">Apprendre,<br>puis faire.</h2>
               <div class="mt-10 h-px bg-line"></div>
@@ -26,21 +26,21 @@
           </div>
         </div>
 
-        <div class="absolute left-2 top-14 z-10 h-64 w-44 -rotate-[15deg] rounded-r-xl rounded-l-md bg-ink p-5 text-cream shadow-[12px_18px_0_rgba(45,33,25,.12),0_18px_35px_rgba(45,33,25,.14)]">
+        <div class="absolute left-0 top-8 z-10 h-64 w-44 -rotate-[15deg] rounded-r-xl rounded-l-md bg-ink p-5 text-cream shadow-[12px_18px_0_rgba(45,33,25,.12),0_18px_35px_rgba(45,33,25,.14)]">
           <div class="absolute left-0 top-0 h-full w-3 rounded-l-md bg-black/20"></div>
           <span class="font-mono text-[10px] uppercase tracking-[.2em] text-amber">Chapitre 02</span>
           <h3 class="mt-16 font-display text-2xl font-bold leading-tight">Pratique<br>avant théorie.</h3>
         </div>
 
-        <div class="absolute bottom-5 right-0 z-30 h-60 w-40 rotate-[13deg] rounded-r-xl rounded-l-md bg-paper-deep p-5 text-ink shadow-[10px_16px_0_rgba(45,33,25,.1),0_16px_30px_rgba(45,33,25,.12)]">
+        <div class="absolute bottom-8 right-0 z-30 h-60 w-40 rotate-[13deg] rounded-r-xl rounded-l-md bg-paper-deep p-5 text-ink shadow-[10px_16px_0_rgba(45,33,25,.1),0_16px_30px_rgba(45,33,25,.12)]">
           <div class="absolute left-0 top-0 h-full w-3 rounded-l-md bg-paper-deep"></div>
           <span class="font-mono text-[10px] uppercase tracking-[.2em] text-orange">Notes</span>
           <h3 class="mt-12 font-display text-2xl font-bold leading-tight">Une idée<br>à la fois.</h3>
           <span class="mt-10 block text-3xl">✦</span>
         </div>
 
-        <span class="js-reveal absolute -right-2 top-4 rounded-full border border-line bg-cream px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-muted shadow-sm">01 · ouvrir</span>
-        <span class="js-reveal absolute bottom-1 left-2 rounded-full bg-ink px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-cream shadow-sm">02 · pratiquer</span>
+        <span class="js-reveal absolute -right-1 top-1 rounded-full border border-line bg-cream px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-muted shadow-sm">01 · ouvrir</span>
+        <span class="js-reveal absolute bottom-3 left-1 rounded-full bg-ink px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-cream shadow-sm">02 · pratiquer</span>
       </div>
     </div>
   </section>
