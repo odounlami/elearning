@@ -1,34 +1,21 @@
 <a [routerLink]="['/courses', course().id]" class="group block">
-  <article class="overflow-hidden rounded-2xl border border-line bg-cream shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-    <div class="relative flex h-60 items-end justify-center overflow-hidden bg-paper-deep px-6 pb-5">
-      <div class="absolute inset-x-8 bottom-4 h-px bg-ink/15"></div>
-      <div [class]="coverVariant + ' relative z-10 rounded-r-xl rounded-l-md p-4 text-cream shadow-xl transition duration-500 group-hover:-translate-y-2'">
-        <div class="flex h-full min-h-0 flex-col overflow-hidden">
-          <div class="flex shrink-0 items-start justify-between gap-2">
-            <span class="font-mono text-[8px] uppercase tracking-[.16em] opacity-70">{{course().domain}}</span>
-            @if(inLibrary()){
-              <span class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-cream text-xs font-bold text-ink" title="Déjà dans votre bibliothèque" aria-label="Déjà dans votre bibliothèque">✓</span>
-            }
-          </div>
-          <strong class="mt-auto block max-w-full overflow-hidden break-words font-display text-[clamp(1rem,2vw,1.45rem)] font-bold leading-[1.05] [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:4]">{{course().title}}</strong>
-          <span class="mt-3 shrink-0 font-mono text-[8px] uppercase tracking-[.16em] opacity-70">{{course().level}}</span>
-        </div>
+  <article class="rounded-2xl border border-line bg-cream p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <p class="font-mono text-[10px] font-semibold uppercase tracking-widest text-orange">{{course().domain}}</p>
+        <h3 class="mt-3 font-display text-2xl font-bold leading-tight">{{course().title}}</h3>
       </div>
-      @if(inLibrary()){
-        <span class="absolute right-4 top-4 z-20 rounded-full bg-ink px-3 py-1.5 text-xs font-semibold text-cream shadow-sm">✓ Dans ma bibliothèque</span>
+      @if(inLibrary()) {
+        <span class="shrink-0 rounded-full bg-paper px-3 py-1.5 text-xs font-semibold text-ink">✓ Déjà ajouté</span>
       }
     </div>
-    <div class="p-5">
-      <div class="flex items-center justify-between gap-3">
-        <p class="font-mono text-[10px] font-semibold uppercase tracking-widest text-orange">{{course().domain}} · {{course().modules.length}} modules</p>
-        <span class="shrink-0 rounded-full bg-paper px-2.5 py-1 text-[10px] font-semibold">{{course().level}}</span>
+    <p class="mt-4 line-clamp-3 text-sm leading-6 text-muted">{{course().description}}</p>
+    <div class="mt-6 flex items-center justify-between gap-3 border-t border-line pt-4 text-sm">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="rounded-full bg-paper px-2.5 py-1 text-[10px] font-semibold">{{course().level}}</span>
+        <span class="text-muted">{{course().modules.length}} modules · {{course().language}}</span>
       </div>
-      <h3 class="mt-2 font-display text-xl font-bold">{{course().title}}</h3>
-      <p class="mt-2 line-clamp-2 text-sm leading-6 text-muted">{{course().description}}</p>
-      <div class="mt-5 flex items-center justify-between gap-3 text-sm">
-        <span class="text-muted">{{course().instructor}}</span>
-        <span class="font-semibold text-orange transition group-hover:translate-x-1">{{inLibrary() ? 'Voir la formation →' : 'Voir →'}}</span>
-      </div>
+      <span class="font-semibold text-orange transition group-hover:translate-x-1">{{inLibrary() ? 'Voir →' : 'Découvrir →'}}</span>
     </div>
   </article>
 </a>
