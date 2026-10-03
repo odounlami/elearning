@@ -78,7 +78,7 @@
                   <div class="mt-2"><app-progress-bar [value]="item.progress"/></div>
                 </div>
 
-                <a [routerLink]="['/learn', item.course.id, item.course.modules[item.completedModuleIds.length]?.id || item.course.modules[0]?.id]" class="inline-flex w-fit shrink-0 rounded-full border border-line bg-cream px-5 py-2.5 text-sm font-semibold text-ink transition hover:border-orange hover:text-orange">
+                <a [routerLink]="['/learn', item.course.id, item.course.modules[item.completedModuleIds.length]?.id || item.course.modules[0]?.id]" class="inline-flex w-fit shrink-0 justify-self-start rounded-full border border-line bg-cream px-5 py-2.5 text-sm font-semibold text-ink transition hover:border-orange hover:text-orange">
                   {{ item.progress === 100 ? 'Revoir →' : item.progress === 0 ? 'Commencer →' : 'Continuer →' }}
                 </a>
               </div>
