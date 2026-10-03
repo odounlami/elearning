@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Level {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+model User {
+  id           Int                @id @default(autoincrement())
+  name         String
+  email        String             @unique
+  passwordHash String
+  createdAt    DateTime           @default(now())
+  enrollments  Enrollment[]
+  completions  ModuleCompletion[]
+}
+
+model Course {
+  id          Int          @id @default(autoincrement())
+  title       String
+  instructor  String
+  language    String
+  level       Level
+  description String
+  modules     Module[]
+  enrollments Enrollment[]
+}
+
+model Module {
+  id              Int                @id @default(autoincrement())
+  courseId        Int
+  title           String
+  position        Int
+  durationSeconds Int
+  videoUrl        String
+  course          Course             @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  audioTracks     AudioTrack[]
+  completions     ModuleCompletion[]
+
+  @@unique([courseId, position])
+}
+
+model AudioTrack {
+  id       Int    @id @default(autoincrement())
+  moduleId Int
+  language String
+  url      String
+  module   Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@unique([moduleId, language])
+}
+
+model Enrollment {
+  userId     Int
+  courseId   Int
+  enrolledAt DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@id([userId, courseId])
+}
+
+model ModuleCompletion {
+  userId      Int
+  moduleId    Int
+  completedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  module      Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, moduleId])
+}
