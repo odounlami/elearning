@@ -11,11 +11,8 @@
   </section>
 
   <div class="js-reveal mt-6 grid gap-3 rounded-2xl border border-line bg-cream p-3 md:grid-cols-3">
-    <label class="relative block">
-      <span class="sr-only" for="course-search">Rechercher une formation</span>
-      <svg viewBox="0 0 24 24" aria-hidden="true" class="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted fill-none stroke-current stroke-2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
-      <input id="course-search" [(ngModel)]="search" type="search" placeholder="Rechercher par titre ou formateur..." class="w-full rounded-xl bg-paper py-3 pl-11 pr-4 outline-none transition focus:ring-2 focus:ring-orange">
-    </label>
+    <label class="sr-only" for="course-search">Rechercher une formation</label>
+    <input id="course-search" [(ngModel)]="search" type="search" placeholder="Rechercher par titre ou formateur..." class="rounded-xl bg-paper px-4 py-3 outline-none transition focus:ring-2 focus:ring-orange">
 
     <label class="sr-only" for="course-level">Filtrer par niveau</label>
     <select id="course-level" [(ngModel)]="level" class="rounded-xl bg-paper px-4 py-3 outline-none">
