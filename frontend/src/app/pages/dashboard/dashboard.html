@@ -1,8 +1,8 @@
 <main class="mx-auto max-w-310 px-5 py-10 lg:px-8 lg:py-16">
   <div class="js-reveal">
-    <p class="font-mono text-xs uppercase tracking-widest text-orange">Ma bibliothèque</p>
-    <h1 class="mt-2 font-display text-5xl font-bold">Bonjour {{auth.user()?.name}}.</h1>
-    <p class="mt-3 text-lg text-muted">Reprenez exactement là où vous vous êtes arrêté.</p>
+    <p class="font-mono text-xs uppercase tracking-widest text-orange">Espace personnel</p>
+    <h1 class="mt-2 font-display text-5xl font-bold">Ma bibliothèque.</h1>
+    <p class="mt-3 max-w-2xl text-lg text-muted">Vos formations en cours, votre progression et les chapitres que vous voulez garder sous la main.</p>
   </div>
   @if(items().length || favorites().length){
     <section class="mt-10">
@@ -39,8 +39,8 @@
     </section>
   }
 
-  @if(favorites().length){
-    <section class="mt-14">
+  @if(items().length || favorites().length){
+    <section class="mt-16">
       <div class="js-reveal flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p class="font-mono text-xs uppercase tracking-widest text-orange">À garder sous la main</p>
@@ -54,8 +54,12 @@
             <app-course-card class="js-reveal h-full" [course]="course"/>
           }
         </div>
-      } @else {
+      } @else if(favorites().length) {
         <div class="mt-5 rounded-2xl border border-dashed border-line p-8 text-center text-muted">Aucun favori ne correspond à votre recherche.</div>
+      } @else {
+        <div class="mt-5 rounded-2xl border border-dashed border-line bg-paper-deep/30 p-8 text-center">
+          <p class="font-display text-xl font-bold">Aucun favori pour le moment.</p><p class="mt-2 text-sm text-muted">Ajoutez une formation à vos favoris depuis son détail pour la retrouver ici.</p>
+        </div>
       }
     </section>
   }
