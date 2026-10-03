@@ -12,6 +12,6 @@ export class CoursesService {
   library() { return this.http.get<Enrollment[]>(API_BASE_URL + '/me/courses'); }
   enroll(id: number) { return this.http.post(API_BASE_URL + '/courses/' + id + '/enroll', {}); }
   completeModule(id: number) { return this.http.post(API_BASE_URL + '/modules/' + id + '/complete', {}); }
-  favorite(id: number) { return this.http.post<{ favorite: true }>(API_BASE_URL + '/courses/' + id + '/favorite', {}); }
-  unfavorite(id: number) { return this.http.delete<{ favorite: false }>(API_BASE_URL + '/courses/' + id + '/favorite'); }
+  favorite(id: number) { return this.http.post<{ favorite: boolean }>(API_BASE_URL + '/courses/' + id + '/favorite', {}); }
+  unfavorite(id: number) { return this.http.delete<{ favorite: boolean }>(API_BASE_URL + '/courses/' + id + '/favorite'); }
 }
