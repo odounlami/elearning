@@ -10,6 +10,7 @@ export class CoursesService {
   list() { return this.http.get<Course[]>(API_BASE_URL + '/courses'); }
   get(id: number) { return this.http.get<Course>(API_BASE_URL + '/courses/' + id); }
   library() { return this.http.get<Enrollment[]>(API_BASE_URL + '/me/courses'); }
+  favorites() { return this.http.get<Course[]>(API_BASE_URL + '/me/favorites'); }
   enroll(id: number) { return this.http.post(API_BASE_URL + '/courses/' + id + '/enroll', {}); }
   completeModule(id: number) { return this.http.post(API_BASE_URL + '/modules/' + id + '/complete', {}); }
   favorite(id: number) { return this.http.post<{ favorite: boolean }>(API_BASE_URL + '/courses/' + id + '/favorite', {}); }

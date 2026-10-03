@@ -4,7 +4,7 @@
     <h1 class="mt-2 font-display text-5xl font-bold">Bonjour {{auth.user()?.name}}.</h1>
     <p class="mt-3 text-lg text-muted">Reprenez exactement là où vous vous êtes arrêté.</p>
   </div>
-  @if(items().length){
+  @if(items().length || favorites().length){
     <section class="mt-10">
       <div class="js-reveal flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <h2 class="font-display text-2xl font-bold">Mes formations</h2>
@@ -33,6 +33,29 @@
         <div class="mt-5 rounded-2xl border border-dashed border-line p-8 text-center text-muted">Aucune formation ne correspond à votre recherche.</div>
       }
     </section>
+  }
+
+  @if(favorites().length){
+    <section class="mt-14">
+      <div class="js-reveal flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p class="font-mono text-xs uppercase tracking-widest text-orange">À garder sous la main</p>
+          <h2 class="font-display text-2xl font-bold">Mes favoris</h2>
+        </div>
+        <p class="text-sm text-muted">{{favorites().length}} formation{{favorites().length > 1 ? 's' : ''}}</p>
+      </div>
+      @if(filteredFavorites.length){
+        <div class="mt-5 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          @for(course of filteredFavorites; track course.id){
+            <app-course-card class="js-reveal h-full" [course]="course"/>
+          }
+        </div>
+      } @else {
+        <div class="mt-5 rounded-2xl border border-dashed border-line p-8 text-center text-muted">Aucun favori ne correspond à votre recherche.</div>
+      }
+    </section>
+  }
+
   } @else {
     <section class="js-reveal mt-10 rounded-3xl border border-dashed border-line bg-paper-deep/40 p-10 text-center">
       <p class="font-mono text-xs uppercase tracking-widest text-orange">Votre bibliothèque</p><h2 class="mt-3 font-display text-2xl font-bold">Votre bibliothèque est vide.</h2><p class="mt-2 text-muted">Choisissez une formation et commencez votre prochain chapitre.</p><a routerLink="/courses" class="mt-6 inline-block rounded-full bg-orange px-6 py-3 font-semibold text-white">Explorer les formations</a>

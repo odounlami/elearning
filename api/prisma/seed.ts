@@ -12,7 +12,9 @@ const VIDEO_URL = 'https://media.w3.org/2010/05/sintel/trailer.mp4';
 
 async function main() {
   if (await prisma.course.count()) {
-    console.log('Seed skipped: courses already exist.');
+    await prisma.module.updateMany({ data: { videoUrl: VIDEO_URL } });
+    await prisma.audioTrack.updateMany({ data: { url: VIDEO_URL } });
+    console.log('Seed updated: learning media refreshed.');
     return;
   }
 
@@ -34,7 +36,7 @@ async function main() {
             audioTracks: {
               create: [
                 { language: 'English', url: VIDEO_URL },
-                { language: 'Français', url: VIDEO_URL },
+                { language: 'Français (simulation)', url: VIDEO_URL },
               ],
             },
           })),

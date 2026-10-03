@@ -126,6 +126,29 @@ coursesRouter.get('/me/courses', requireAuth, async (req, res) => {
   );
 });
 
+coursesRouter.get('/me/favorites', requireAuth, async (req, res) => {
+  const userId = (req as AuthenticatedRequest).userId;
+
+  const favorites = await prisma.favorite.findMany({
+    where: { userId },
+    include: {
+      course: {
+        include: {
+          modules: { orderBy: { position: 'asc' } },
+        },
+      },
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  return res.json(
+    favorites.map(({ course }) => ({
+      ...course,
+      modules: course.modules.map(({ videoUrl, audioTracks, ...module }) => module),
+    })),
+  );
+});
+
 coursesRouter.post('/courses/:id/enroll', requireAuth, async (req, res) => {
   const userId = (req as AuthenticatedRequest).userId;
   const courseId = Number(req.params.id);
