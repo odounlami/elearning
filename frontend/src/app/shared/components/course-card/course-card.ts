@@ -6,7 +6,7 @@ const VISUAL_VARIANTS = [
   'bg-ink text-cream',
   'bg-orange text-white',
   'bg-paper-deep text-ink',
-  'bg-green text-cream',
+  'bg-green text-white',
 ] as const;
 
 @Component({
