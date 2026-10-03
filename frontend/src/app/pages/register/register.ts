@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { finalize } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { getAuthErrorMessage } from '../../core/auth/auth-error';
 import { revealPage } from '../../shared/utils/page-motion';
@@ -42,7 +42,7 @@ export class Register implements AfterViewInit {
     revealPage(this.host);
   }
 
-  submit() {
+  async submit() {
     this.error = '';
 
     if (this.form.invalid) {
@@ -60,22 +60,22 @@ export class Register implements AfterViewInit {
 
     this.loading = true;
 
-    this.auth
-      .register(name.trim(), email.trim(), password)
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe({
-        next: () => {
-          const pending = localStorage.getItem('elearning_pending_course');
-          localStorage.removeItem('elearning_pending_course');
-          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    try {
+      await firstValueFrom(
+        this.auth.register(name.trim(), email.trim(), password),
+      );
 
-          void this.router.navigateByUrl(
-            returnUrl || (pending ? `/courses/${pending}` : '/dashboard'),
-          );
-        },
-        error: (error: unknown) => {
-          this.error = getAuthErrorMessage(error, 'register');
-        },
-      });
+      const pending = localStorage.getItem('elearning_pending_course');
+      localStorage.removeItem('elearning_pending_course');
+      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+
+      await this.router.navigateByUrl(
+        returnUrl || (pending ? `/courses/${pending}` : '/dashboard'),
+      );
+    } catch (error: unknown) {
+      this.error = getAuthErrorMessage(error, 'register');
+    } finally {
+      this.loading = false;
+    }
   }
 }
