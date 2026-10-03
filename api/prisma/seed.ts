@@ -8,12 +8,22 @@ const courses = [
   { title: 'Concevoir une API REST', domain: 'Backend & API', instructor: 'Oscar M.', language: 'Français', level: 'ADVANCED' as const, description: 'Concevez une API claire et robuste avec authentification, persistance PostgreSQL et bonnes pratiques REST.', modules: [['Modéliser les données', 1, 600], ['Authentification et sécurité', 2, 720], ['Structurer les endpoints', 3, 840]] },
 ];
 
-const VIDEO_URL = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+const VIDEO_URL = 'https://media.w3.org/2010/05/sintel/trailer.mp4';
+const ENGLISH_AUDIO_URL = 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1860%20%28eng%29-Vealhurl-reported%20speech.wav';
+const FRENCH_AUDIO_URL = 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q150%20%28fra%29-Ben%20%28Mathsou%29-parle.wav';
 
 async function main() {
   if (await prisma.course.count()) {
     await prisma.module.updateMany({ data: { videoUrl: VIDEO_URL } });
-    console.log('Seed updated: stable English demo video restored.');
+    await prisma.audioTrack.updateMany({
+      where: { language: 'English' },
+      data: { url: ENGLISH_AUDIO_URL },
+    });
+    await prisma.audioTrack.updateMany({
+      where: { language: { contains: 'Français' } },
+      data: { url: FRENCH_AUDIO_URL },
+    });
+    console.log('Seed updated: learning media refreshed.');
     return;
   }
 
@@ -32,6 +42,12 @@ async function main() {
             position: position as number,
             durationSeconds: durationSeconds as number,
             videoUrl: VIDEO_URL,
+            audioTracks: {
+              create: [
+                { language: 'English', url: ENGLISH_AUDIO_URL },
+                { language: 'Français (simulation)', url: FRENCH_AUDIO_URL },
+              ],
+            },
           })),
         },
       },
