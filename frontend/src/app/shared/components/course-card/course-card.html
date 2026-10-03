@@ -1,20 +1,33 @@
-<a [routerLink]="['/courses',course().id]" class="group block">
+<a [routerLink]="['/courses', course().id]" class="group block">
   <article class="overflow-hidden rounded-2xl border border-line bg-cream shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-    <div class="relative h-48 overflow-hidden bg-paper-deep p-5">
-      <div class="absolute -right-8 -top-10 h-32 w-28 rotate-8 rounded-lg bg-orange/80 transition duration-500 group-hover:rotate-12 group-hover:scale-110"></div>
-      <div class="absolute bottom-5 left-7 h-28 w-22 -rotate-4 rounded-lg bg-ink p-3 text-cream shadow-lg transition duration-500 group-hover:-translate-y-1">
-        <span class="font-mono text-[9px] uppercase tracking-[.16em] text-amber">Level Up</span>
-        <strong class="mt-2 block font-display text-lg leading-tight">{{course().title}}</strong>
+    <div class="relative flex h-60 items-end justify-center overflow-hidden bg-paper-deep px-6 pb-5">
+      <div class="absolute inset-x-8 bottom-4 h-px bg-ink/15"></div>
+      <div [class]="coverVariant + ' relative z-10 rounded-r-xl rounded-l-md p-4 text-cream shadow-xl transition duration-500 group-hover:-translate-y-2'">
+        <div class="flex h-full min-h-0 flex-col overflow-hidden">
+          <div class="flex shrink-0 items-start justify-between gap-2">
+            <span class="font-mono text-[8px] uppercase tracking-[.16em] opacity-70">{{course().domain}}</span>
+            @if(inLibrary()){
+              <span class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-cream text-xs font-bold text-ink" title="Déjà dans votre bibliothèque" aria-label="Déjà dans votre bibliothèque">✓</span>
+            }
+          </div>
+          <strong class="mt-auto block max-w-full overflow-hidden break-words font-display text-[clamp(1rem,2vw,1.45rem)] font-bold leading-[1.05] [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:4]">{{course().title}}</strong>
+          <span class="mt-3 shrink-0 font-mono text-[8px] uppercase tracking-[.16em] opacity-70">{{course().level}}</span>
+        </div>
       </div>
-      <span class="absolute right-4 bottom-4 rounded-full bg-cream/95 px-3 py-1 text-xs font-semibold">{{course().level}}</span>
+      @if(inLibrary()){
+        <span class="absolute right-4 top-4 z-20 rounded-full bg-ink px-3 py-1.5 text-xs font-semibold text-cream shadow-sm">✓ Dans ma bibliothèque</span>
+      }
     </div>
     <div class="p-5">
-      <p class="font-mono text-[10px] font-semibold uppercase tracking-widest text-orange">{{course().domain}} · {{course().modules.length}} modules</p>
+      <div class="flex items-center justify-between gap-3">
+        <p class="font-mono text-[10px] font-semibold uppercase tracking-widest text-orange">{{course().domain}} · {{course().modules.length}} modules</p>
+        <span class="shrink-0 rounded-full bg-paper px-2.5 py-1 text-[10px] font-semibold">{{course().level}}</span>
+      </div>
       <h3 class="mt-2 font-display text-xl font-bold">{{course().title}}</h3>
       <p class="mt-2 line-clamp-2 text-sm leading-6 text-muted">{{course().description}}</p>
-      <div class="mt-5 flex justify-between text-sm">
+      <div class="mt-5 flex items-center justify-between gap-3 text-sm">
         <span class="text-muted">{{course().instructor}}</span>
-        <span class="font-semibold text-orange transition group-hover:translate-x-1">Voir →</span>
+        <span class="font-semibold text-orange transition group-hover:translate-x-1">{{inLibrary() ? 'Voir la formation →' : 'Voir →'}}</span>
       </div>
     </div>
   </article>
