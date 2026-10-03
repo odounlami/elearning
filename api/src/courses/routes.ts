@@ -78,7 +78,7 @@ coursesRouter.get('/courses/:id', async (req, res) => {
     return res.json({
       ...course,
       isFavorite: !!favorite,
-      modules: course.modules.map(({ videoUrl, audioTracks, ...module }) => module),
+      modules: course.modules.map(({ videoUrl, ...module }) => module),
     });
   }
 
