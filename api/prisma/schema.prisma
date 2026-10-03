@@ -21,6 +21,7 @@ model User {
   createdAt    DateTime           @default(now())
   enrollments  Enrollment[]
   completions  ModuleCompletion[]
+  favorites    Favorite[]
 }
 
 model Course {
@@ -33,6 +34,7 @@ model Course {
   description String
   modules     Module[]
   enrollments Enrollment[]
+  favorites   Favorite[]
 }
 
 model Module {
@@ -64,7 +66,7 @@ model Enrollment {
   courseId   Int
   enrolledAt DateTime @default(now())
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course     Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@id([userId, courseId])
 }
@@ -77,4 +79,14 @@ model ModuleCompletion {
   module      Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 
   @@id([userId, moduleId])
+}
+
+model Favorite {
+  userId    Int
+  courseId  Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@id([userId, courseId])
 }

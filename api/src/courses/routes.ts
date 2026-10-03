@@ -53,14 +53,19 @@ coursesRouter.get('/courses/:id', async (req, res) => {
       })
     : null;
 
+  const favorite = userId
+    ? await prisma.favorite.findUnique({
+        where: { userId_courseId: { userId, courseId: id } },
+        select: { userId: true },
+      })
+    : null;
+
   const course = await prisma.course.findUnique({
     where: { id },
     include: {
       modules: {
         orderBy: { position: 'asc' },
-        include: {
-          audioTracks: true,
-        },
+        include: { audioTracks: true },
       },
     },
   });
@@ -72,11 +77,12 @@ coursesRouter.get('/courses/:id', async (req, res) => {
   if (!enrollment) {
     return res.json({
       ...course,
+      isFavorite: !!favorite,
       modules: course.modules.map(({ videoUrl, audioTracks, ...module }) => module),
     });
   }
 
-  return res.json(course);
+  return res.json({ ...course, isFavorite: !!favorite });
 });
 
 coursesRouter.get('/me/courses', requireAuth, async (req, res) => {
@@ -87,9 +93,7 @@ coursesRouter.get('/me/courses', requireAuth, async (req, res) => {
     include: {
       course: {
         include: {
-          modules: {
-            orderBy: { position: 'asc' },
-          },
+          modules: { orderBy: { position: 'asc' } },
         },
       },
     },
@@ -141,6 +145,40 @@ coursesRouter.post('/courses/:id/enroll', requireAuth, async (req, res) => {
   });
 
   return res.status(201).json({ enrolled: true });
+});
+
+coursesRouter.post('/courses/:id/favorite', requireAuth, async (req, res) => {
+  const userId = (req as AuthenticatedRequest).userId;
+  const courseId = Number(req.params.id);
+
+  if (!Number.isInteger(courseId)) {
+    return res.status(400).json({ error: 'INVALID_ID' });
+  }
+
+  if (!(await prisma.course.findUnique({ where: { id: courseId }, select: { id: true } }))) {
+    return res.status(404).json({ error: 'COURSE_NOT_FOUND' });
+  }
+
+  await prisma.favorite.upsert({
+    where: { userId_courseId: { userId, courseId } },
+    create: { userId, courseId },
+    update: {},
+  });
+
+  return res.status(201).json({ favorite: true });
+});
+
+coursesRouter.delete('/courses/:id/favorite', requireAuth, async (req, res) => {
+  const userId = (req as AuthenticatedRequest).userId;
+  const courseId = Number(req.params.id);
+
+  if (!Number.isInteger(courseId)) {
+    return res.status(400).json({ error: 'INVALID_ID' });
+  }
+
+  await prisma.favorite.deleteMany({ where: { userId, courseId } });
+
+  return res.json({ favorite: false });
 });
 
 coursesRouter.post('/modules/:id/complete', requireAuth, async (req, res) => {

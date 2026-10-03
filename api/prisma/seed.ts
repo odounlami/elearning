@@ -8,6 +8,8 @@ const courses = [
   { title: 'Concevoir une API REST', domain: 'Backend & API', instructor: 'Oscar M.', language: 'Français', level: 'ADVANCED' as const, description: 'Concevez une API claire et robuste avec authentification, persistance PostgreSQL et bonnes pratiques REST.', modules: [['Modéliser les données', 1, 600], ['Authentification et sécurité', 2, 720], ['Structurer les endpoints', 3, 840]] },
 ];
 
+const VIDEO_URL = 'https://media.w3.org/2010/05/sintel/trailer.mp4';
+
 async function main() {
   if (await prisma.course.count()) {
     console.log('Seed skipped: courses already exist.');
@@ -28,11 +30,11 @@ async function main() {
             title: title as string,
             position: position as number,
             durationSeconds: durationSeconds as number,
-            videoUrl: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
+            videoUrl: VIDEO_URL,
             audioTracks: {
               create: [
-                { language: 'Français', url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4' },
-                { language: 'English', url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4' },
+                { language: 'English', url: VIDEO_URL },
+                { language: 'Français', url: VIDEO_URL },
               ],
             },
           })),
