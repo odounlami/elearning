@@ -12,7 +12,7 @@ FROM node:24-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=build /app/package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci
 COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/prisma7.config.ts ./prisma7.config.ts
 COPY --from=build /app/src ./src
