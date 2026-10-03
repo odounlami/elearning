@@ -2,21 +2,30 @@
   <div class="js-reveal">
     <p class="font-mono text-xs uppercase tracking-widest text-orange">Espace personnel</p>
     <h1 class="mt-2 font-display text-5xl font-bold">Ma bibliothèque.</h1>
-    <p class="mt-3 max-w-2xl text-lg text-muted">Vos formations en cours, votre progression et les chapitres que vous voulez garder sous la main.</p>
+    <p class="mt-3 max-w-2xl text-lg text-muted">Retrouvez vos formations et reprenez là où vous vous êtes arrêté.</p>
   </div>
   @if(items().length || favorites().length){
     <section class="mt-10">
       <div class="js-reveal flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <h2 class="font-display text-2xl font-bold">Mes formations</h2>
-        <label class="relative block w-full sm:max-w-80">
-          <span class="sr-only">Rechercher dans ma bibliothèque</span>
-          <svg viewBox="0 0 24 24" aria-hidden="true" class="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted fill-none stroke-current stroke-2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
-          <input [(ngModel)]="search" type="search" placeholder="Rechercher une formation ou un formateur..." class="w-full rounded-xl border border-line bg-white py-3 pl-11 pr-4 outline-none transition focus:ring-2 focus:ring-orange">
-        </label>
+        <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+          <label class="relative block w-full sm:w-72">
+            <span class="sr-only">Rechercher dans ma bibliothèque</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted fill-none stroke-current stroke-2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+            <input [(ngModel)]="search" type="search" placeholder="Rechercher..." class="w-full rounded-xl border border-line bg-white py-3 pl-11 pr-4 outline-none transition focus:ring-2 focus:ring-orange">
+          </label>
+          <label class="block w-full sm:w-44">
+            <span class="sr-only">Filtrer la bibliothèque</span>
+            <select [(ngModel)]="libraryFilter" class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm font-semibold text-ink outline-none transition focus:ring-2 focus:ring-orange">
+              <option value="all">Toutes</option>
+              <option value="favorites">Mes favoris</option>
+            </select>
+          </label>
+        </div>
       </div>
-      @if(filteredItems.length){
+      @if(filteredLibraryItems.length){
         <div class="mt-5 grid gap-6">
-          @for(item of filteredItems; track item.course.id){
+          @for(item of filteredLibraryItems; track item.course.id){
             <article class="js-reveal overflow-hidden rounded-3xl border border-line bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
               <div class="grid lg:grid-cols-[.8fr_1.2fr]">
                 <div class="flex min-h-55 flex-col justify-between bg-ink p-7 text-cream sm:p-8">
@@ -27,44 +36,24 @@
                   <p class="font-mono text-xs uppercase tracking-widest text-orange">Progression</p>
                   <div class="mt-3 flex items-end justify-between gap-4"><strong class="font-display text-3xl">{{item.progress}}%</strong><span class="text-sm text-muted">{{item.completedModuleIds.length}} / {{item.course.modules.length}} modules</span></div>
                   <div class="mt-4"><app-progress-bar [value]="item.progress"/></div>
-                  <a [routerLink]="['/learn', item.course.id, item.course.modules[item.completedModuleIds.length]?.id || item.course.modules[0]?.id]" class="mt-7 inline-flex w-fit rounded-full bg-orange px-5 py-3 text-sm font-semibold text-white transition hover:bg-orange-dark">{{ item.progress === 100 ? 'Revoir la formation' : 'Continuer →' }}</a>
+                  <a [routerLink]="['/learn', item.course.id, item.course.modules[item.completedModuleIds.length]?.id || item.course.modules[0]?.id]" class="mt-7 inline-flex w-fit rounded-full bg-orange px-5 py-3 text-sm font-semibold text-white transition hover:bg-orange-dark">{{ item.progress === 100 ? 'Revoir la formation' : item.progress === 0 ? 'Commencer →' : 'Continuer →' }}</a>
                 </div>
               </div>
             </article>
           }
         </div>
       } @else {
-        <div class="mt-5 rounded-2xl border border-dashed border-line p-8 text-center text-muted">Aucune formation ne correspond à votre recherche.</div>
-      }
-    </section>
-  }
-
-  @if(items().length || favorites().length){
-    <section class="mt-16">
-      <div class="js-reveal flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p class="font-mono text-xs uppercase tracking-widest text-orange">À garder sous la main</p>
-          <h2 class="font-display text-2xl font-bold">Mes favoris</h2>
-        </div>
-        <p class="text-sm text-muted">{{favorites().length}} formation{{favorites().length > 1 ? 's' : ''}}</p>
-      </div>
-      @if(filteredFavorites.length){
-        <div class="mt-5 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          @for(course of filteredFavorites; track course.id){
-            <app-course-card class="js-reveal h-full" [course]="course"/>
+        <div class="mt-5 rounded-2xl border border-dashed border-line p-8 text-center text-muted">
+          @if(libraryFilter === 'favorites') {
+            <p class="font-display text-xl font-bold text-ink">Aucun favori pour le moment.</p>
+            <p class="mt-2">Ajoutez une formation à vos favoris depuis son détail.</p>
+          } @else {
+            <p>Aucune formation ne correspond à votre recherche.</p>
           }
         </div>
-      } @else if(favorites().length) {
-        <div class="mt-5 rounded-2xl border border-dashed border-line p-8 text-center text-muted">Aucun favori ne correspond à votre recherche.</div>
-      } @else {
-        <div class="mt-5 rounded-2xl border border-dashed border-line bg-paper-deep/30 p-8 text-center">
-          <p class="font-display text-xl font-bold">Aucun favori pour le moment.</p><p class="mt-2 text-sm text-muted">Ajoutez une formation à vos favoris depuis son détail pour la retrouver ici.</p>
-        </div>
       }
     </section>
-  }
-
-  @if(!(items().length || favorites().length)){
+  } @else {
     <section class="js-reveal mt-10 rounded-3xl border border-dashed border-line bg-paper-deep/40 p-10 text-center">
       <p class="font-mono text-xs uppercase tracking-widest text-orange">Votre bibliothèque</p><h2 class="mt-3 font-display text-2xl font-bold">Votre bibliothèque est vide.</h2><p class="mt-2 text-muted">Choisissez une formation et commencez votre prochain chapitre.</p><a routerLink="/courses" class="mt-6 inline-block rounded-full bg-orange px-6 py-3 font-semibold text-white">Explorer les formations</a>
     </section>
