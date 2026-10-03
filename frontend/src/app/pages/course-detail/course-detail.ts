@@ -23,8 +23,8 @@ export class CourseDetail implements AfterViewInit {
     return variants[(id - 1) % variants.length];
   });
   enrolling = false;
-  enrolled = false;
-  libraryReady = !this.auth.isAuthenticated();
+  readonly enrolled = signal(false);
+  readonly libraryReady = signal(!this.auth.isAuthenticated());
 
   constructor() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
