@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -34,15 +34,15 @@ export class Register implements AfterViewInit {
     }),
   });
 
-  error = '';
-  loading = false;
+  readonly error = signal('');
+  readonly loading = signal(false);
 
   ngAfterViewInit() {
     revealPage(this.host);
   }
 
   async submit() {
-    this.error = '';
+    this.error.set('');
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -53,20 +53,20 @@ export class Register implements AfterViewInit {
 
     if (password !== confirmPassword) {
       this.form.controls.confirmPassword.markAsTouched();
-      this.error = 'Les mots de passe ne correspondent pas.';
+      this.error.set('Les mots de passe ne correspondent pas.');
       return;
     }
 
-    this.loading = true;
+    this.loading.set(true);
 
     const result = await firstValueFrom(
       this.auth.register(name.trim(), email.trim(), password),
     );
 
-    this.loading = false;
+    this.loading.set(false);
 
     if (!result.success) {
-      this.error = result.message;
+      this.error.set(result.message);
       return;
     }
 
