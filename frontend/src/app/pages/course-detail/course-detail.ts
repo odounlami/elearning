@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, inject, signal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, computed, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CoursesService } from '../../core/courses/courses.service';
@@ -17,6 +17,11 @@ export class CourseDetail implements AfterViewInit {
   readonly course = signal<Course | null>(null);
   readonly favorite = signal(false);
   readonly favoriteBusy = signal(false);
+  readonly visualVariant = computed(() => {
+    const variants = ['bg-ink text-cream', 'bg-orange text-white', 'bg-amber text-ink', 'bg-paper-deep text-ink'];
+    const id = this.course()?.id ?? 1;
+    return variants[(id - 1) % variants.length];
+  });
   enrolling = false;
   enrolled = false;
   libraryReady = !this.auth.isAuthenticated();
