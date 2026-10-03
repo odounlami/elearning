@@ -7,8 +7,44 @@ import { revealPage } from '../../shared/utils/page-motion';
 @Component({imports:[ReactiveFormsModule,RouterLink],templateUrl:'./register.html'})
 export class Register implements AfterViewInit {
   private readonly auth=inject(AuthService);private readonly router=inject(Router);private readonly route=inject(ActivatedRoute);private readonly host=inject(ElementRef<HTMLElement>);
-  readonly form=new FormGroup({name:new FormControl('',{nonNullable:true,validators:[Validators.required,Validators.minLength(2)]}),email:new FormControl('',{nonNullable:true,validators:[Validators.required,Validators.email]}),password:new FormControl('',{nonNullable:true,validators:[Validators.required,Validators.minLength(8)]}),confirmPassword:new FormControl('',{nonNullable:true,validators:[Validators.required]})});
+  readonly form=new FormGroup({
+    name:new FormControl('',{nonNullable:true,validators:[Validators.required,Validators.minLength(2)]}),
+    email:new FormControl('',{nonNullable:true,validators:[Validators.required,Validators.email]}),
+    password:new FormControl('',{nonNullable:true,validators:[Validators.required,Validators.minLength(8)]}),
+    confirmPassword:new FormControl('',{nonNullable:true,validators:[Validators.required]})
+  });
   error='';loading=false;
+
   ngAfterViewInit(){revealPage(this.host);}
-  submit(){if(this.form.invalid){this.form.markAllAsTouched();return;}const v=this.form.getRawValue();if(v.password!==v.confirmPassword){this.error='Les mots de passe ne correspondent pas.';return;}this.loading=true;this.auth.register(v.name,v.email,v.password).subscribe({next:()=>{const pending=localStorage.getItem('elearning_pending_course');localStorage.removeItem('elearning_pending_course');const returnUrl=this.route.snapshot.queryParamMap.get('returnUrl');void this.router.navigateByUrl(returnUrl||(pending?'/courses/'+pending:'/dashboard'));},error:e=>{this.loading=false;this.error=e.status===409?'Cette adresse email est déjà utilisée.':'Impossible de créer le compte.';}});}
+
+  submit(){
+    this.error='';
+    if(this.form.invalid){this.form.markAllAsTouched();return;}
+    const v=this.form.getRawValue();
+    if(v.password!==v.confirmPassword){this.form.controls.confirmPassword.markAsTouched();this.error='Les mots de passe ne correspondent pas.';return;}
+
+    this.loading=true;
+    this.auth.register(v.name.trim(),v.email.trim(),v.password).subscribe({
+      next:()=>{
+        const pending=localStorage.getItem('elearning_pending_course');
+        localStorage.removeItem('elearning_pending_course');
+        const returnUrl=this.route.snapshot.queryParamMap.get('returnUrl');
+        void this.router.navigateByUrl(returnUrl||(pending?'/courses/'+pending:'/dashboard'));
+      },
+      error:e=>{
+        this.loading=false;
+        if(e.status===400){
+          const fields=e.error?.details?.fieldErrors ?? {};
+          if(fields.email?.length) this.error='Entrez une adresse email valide.';
+          else if(fields.name?.length) this.error='Le nom doit contenir entre 2 et 100 caractères.';
+          else if(fields.password?.length) this.error='Le mot de passe doit contenir entre 8 et 100 caractères.';
+          else this.error='Les informations saisies sont invalides.';
+        }else if(e.status===409){
+          this.error='Cette adresse email est déjà utilisée.';
+        }else{
+          this.error='Impossible de créer le compte pour le moment. Réessayez dans quelques instants.';
+        }
+      }
+    });
+  }
 }
