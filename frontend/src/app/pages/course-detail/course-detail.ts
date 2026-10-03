@@ -19,6 +19,7 @@ export class CourseDetail implements AfterViewInit {
   readonly favoriteBusy = signal(false);
   enrolling = false;
   enrolled = false;
+  libraryReady = !this.auth.isAuthenticated();
 
   constructor() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -34,8 +35,8 @@ export class CourseDetail implements AfterViewInit {
 
     if (this.auth.isAuthenticated()) {
       this.service.library().subscribe({
-        next: (items) => { this.enrolled = items.some((item) => item.course.id === id); loadCourse(); },
-        error: () => loadCourse(),
+        next: (items) => { this.enrolled = items.some((item) => item.course.id === id); this.libraryReady = true; loadCourse(); },
+        error: () => { this.libraryReady = true; loadCourse(); },
       });
     } else loadCourse();
   }
