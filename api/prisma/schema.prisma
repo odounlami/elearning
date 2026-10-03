@@ -26,6 +26,7 @@ model User {
 model Course {
   id          Int          @id @default(autoincrement())
   title       String
+  domain      String
   instructor  String
   language    String
   level       Level
