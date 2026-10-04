@@ -55,9 +55,7 @@ Les favoris sont également modélisés comme une relation utilisateur/formation
 
 Avant de commencer le développement, Angular et Next.js ont été comparés.
 
-Next.js était une option familière et aurait permis de développer rapidement, mais le sujet impose Angular pour le frontend. Angular a donc été retenu, non pas par manque d'alternative, mais parce qu'il répond directement au cadre du sujet et fournit une structure adaptée à une application organisée en composants, routes, services et guards.
-
-Le choix permet également de garder une séparation claire entre l'application frontend et l'API backend.
+Next.js était une option familière et aurait permis de développer rapidement. Angular a été retenu pour sa structure native (composants, routing, services, guards), adaptée à une application organisée en parcours protégés, et pour garder une séparation claire avec l'API backend.
 
 ### Vue d'ensemble
 
