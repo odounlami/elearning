@@ -28,7 +28,7 @@
   <main class="mx-auto max-w-310 px-5 py-10 lg:px-8 lg:py-16">
     <a routerLink="/courses" class="js-reveal text-sm font-semibold text-orange">← Retour au catalogue</a>
     <section class="mt-6 grid gap-8 lg:grid-cols-[.8fr_1.2fr]">
-      <div [class]="'js-reveal min-h-90 rounded-3xl p-8 shadow-xl sm:p-10 ' + visualVariant()"><span class="font-mono text-xs uppercase tracking-widest text-amber">{{ course.domain }} · {{ course.level }}</span><h1 class="mt-18 font-display text-5xl font-bold leading-tight text-cream">{{ course.title }}</h1><p class="mt-4 text-cream/70">{{ course.instructor }}</p></div>
+      <div [class]="'js-reveal min-h-90 rounded-3xl p-8 shadow-xl sm:p-10 ' + visualVariant()"><span class="font-mono text-xs uppercase tracking-widest text-amber">{{ course.domain }} · {{ course.level }}</span><h1 class="mt-18 font-display text-5xl font-bold leading-tight">{{ course.title }}</h1><p class="mt-4 opacity-70">{{ course.instructor }}</p></div>
       <div class="js-reveal flex flex-col justify-center">
         <p class="max-w-2xl text-lg leading-8 text-muted">{{ course.description }}</p>
         <div class="mt-7 flex flex-wrap items-center gap-3">
