@@ -96,6 +96,8 @@ L'API utilise des tokens JWT. Les mots de passe sont hashés avec bcrypt et les 
 
 Les données de progression ne peuvent être enregistrées que pour un utilisateur inscrit à la formation concernée.
 
+La gestion des emails réels n'a pas été intégrée dans le périmètre des 72 heures : l'inscription ne déclenche pas d'email de vérification et aucun parcours de récupération de mot de passe par email n'est actuellement disponible. Ces fonctionnalités nécessiteraient notamment un fournisseur d'envoi d'emails, la gestion de modèles et de liens sécurisés à durée limitée.
+
 ### Docker
 
 Docker Compose permet de lancer le frontend, l'API et PostgreSQL dans un environnement reproductible. Le démarrage de l'API initialise le schéma Prisma et les données de démonstration.
@@ -211,6 +213,7 @@ Une optimisation plus globale des requêtes reste volontairement identifiée com
 Les principales améliorations prévues sont :
 - rendre les requêtes API moins gourmandes et regrouper certaines données pour réduire la latence ;
 - renforcer les tests automatisés ;
+- mettre en place une véritable gestion des emails, notamment la vérification d'adresse et la récupération de mot de passe ;
 - utiliser des médias distincts pour chaque module ;
 - ajouter les bonus restants, notamment les quiz et une administration plus complète ;
 - poursuivre l'optimisation du cache et des chargements côté frontend.
