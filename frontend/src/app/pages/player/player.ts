@@ -66,6 +66,7 @@ export class Player implements AfterViewInit {
 
         this.current.set(module);
         this.audioLanguage = module.audioTracks?.[0]?.language ?? course.language;
+        setTimeout(() => this.resetMedia(), 0);
 
         if (module.id !== moduleId) {
           void this.router.navigate(['/learn', course.id, module.id], { replaceUrl: true });
@@ -127,8 +128,29 @@ export class Player implements AfterViewInit {
     this.service.completeModule(module.id).subscribe({
       next: () => {
         this.completed.update((items) => new Set(items).add(module.id));
+        const course = this.course();
+        if (course && this.currentIndex < course.modules.length - 1) {
+          void this.router.navigate(['/learn', course.id, course.modules[this.currentIndex + 1].id]);
+        }
       },
     });
+  }
+
+  private resetMedia(): void {
+    const video = this.video?.nativeElement;
+    const audio = this.audio?.nativeElement;
+
+    if (video) {
+      video.pause();
+      video.currentTime = 0;
+      video.load();
+    }
+
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+      audio.load();
+    }
   }
 
   selectModule(module: Module): void {
