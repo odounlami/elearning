@@ -28,8 +28,8 @@ La conception de l'interface a été réalisée avant le développement fonction
 L'univers retenu est volontairement éditorial et inspiré d'une bibliothèque : fonds papier/crème, structure brune, typographies de lecture et accents orange/ambre. L'objectif était de donner une identité plus chaleureuse et ludique à l'apprentissage, sans perdre le sérieux nécessaire à une plateforme de formation.
 
 Le design system s'appuie notamment sur :
-- \`paper\` et \`paper-deep\` pour les surfaces ;
-- \`ink\`, \`muted\` et \`line\` pour la hiérarchie visuelle ;
+- `paper` et `paper-deep` pour les surfaces ;
+- `ink`, `muted` et `line` pour la hiérarchie visuelle ;
 - orange et ambre comme couleurs d'accent ;
 - **Lora** pour les titres ;
 - **Inter** pour le contenu courant ;
@@ -59,7 +59,7 @@ Next.js était une option familière et aurait permis de développer rapidement.
 
 ### Vue d'ensemble
 
-\`\`\`
+```
 Angular + Tailwind CSS
           │
           ▼
@@ -70,7 +70,7 @@ Express + TypeScript
           │
           ▼
       PostgreSQL
-\`\`\`
+```
 
 En production, le frontend est déployé séparément de l'API et la base PostgreSQL est hébergée sur un service dédié.
 
@@ -86,7 +86,7 @@ Express avec TypeScript a été retenu pour construire une API REST légère et 
 
 PostgreSQL a été choisi pour gérer les relations entre utilisateurs, formations, modules et progression. Prisma 7 fournit un accès typé à la base.
 
-Les principales entités sont : \`User\`, \`Course\`, \`Module\`, \`AudioTrack\`, \`Enrollment\`, \`ModuleCompletion\` et \`Favorite\`.
+Les principales entités sont : `User`, `Course`, `Module`, `AudioTrack`, `Enrollment`, `ModuleCompletion` et `Favorite`.
 
 ### Authentification et protection
 
@@ -117,7 +117,7 @@ La bibliothèque et les favoris ont été mis en cache côté frontend afin de r
 
 ### Itérations et Git
 
-Le développement a suivi des itérations courtes avec des commits ciblés, notamment avec les préfixes \`feat:\`, \`fix:\`, \`perf:\` et \`docs:\`. Les corrections de progression, d'authentification, de chargement, de production et de performance ont ainsi été isolées dans des commits lisibles et traçables.
+Le développement a suivi des itérations courtes avec des commits ciblés, notamment avec les préfixes `feat:`, `fix:`, `perf:` et `docs:`. Les corrections de progression, d'authentification, de chargement, de production et de performance ont ainsi été isolées dans des commits lisibles et traçables.
 
 ## 5. Tests et validation
 
@@ -165,9 +165,9 @@ Le frontend ne considère pas la simple présence d'une donnée d'interface comm
 
 L'ensemble de la plateforme peut être lancé avec :
 
-\`\`\`bash
+```bash
 docker compose up --build
-\`\`\`
+```
 
 Le frontend est servi sur le port 8080 et l'API sur le port 3000.
 
@@ -178,9 +178,9 @@ La production utilise :
 - **Render** pour l'API Express ;
 - **Supabase** pour PostgreSQL.
 
-Frontend : \`https://elearning-kappa-one.vercel.app\`
+Frontend : `https://elearning-kappa-one.vercel.app`
 
-API : \`https://elearning-05hx.onrender.com\`
+API : `https://elearning-05hx.onrender.com`
 
 Cette séparation permet de déployer indépendamment l'interface, l'API et la base de données tout en conservant une architecture simple.
 
@@ -200,16 +200,23 @@ Le frontend de production appelait l'API depuis un domaine Vercel stable, tandis
 
 La configuration a été corrigée pour utiliser le domaine frontend de production comme origine autorisée. Cette vérification a permis de valider séparément le fonctionnement de l'API et la communication frontend/API.
 
-### Différences entre local et production
+### Différences de performance entre local et production
 
-Certaines pages étaient sensiblement plus lentes en production qu'en local. Une première optimisation ciblée a consisté à précharger et mettre en cache certaines données utilisateur afin de limiter les requêtes répétées.
+L'écart de vitesse entre l'environnement local et la version déployée est très net : l'application est sensiblement plus réactive en local, tandis que certaines interactions prennent davantage de temps en production.
 
-Une optimisation plus globale des requêtes reste volontairement identifiée comme travail futur plutôt que d'introduire des changements importants à la fin du délai.
+Une première optimisation ciblée a consisté à précharger et mettre en cache certaines données utilisateur afin de limiter les requêtes répétées. Cette optimisation améliore certains parcours sans modifier l'architecture générale.
+
+Une optimisation plus globale des performances reste volontairement identifiée comme travail futur. Elle pourra notamment porter sur les requêtes API, la quantité de données chargées, le regroupement de certaines requêtes, la stratégie de cache et les temps de réponse de l'infrastructure distante. Ces améliorations n'ont pas été introduites à la fin du délai afin d'éviter de déstabiliser une application déjà fonctionnelle.
+
+### Validation Docker
+
+Le projet a également été testé depuis un environnement Docker Compose propre, avec reconstruction des images et réinitialisation du volume PostgreSQL. Le parcours principal — démarrage des services, connexion, consultation du catalogue, apprentissage et progression — a été vérifié avec succès.
 
 ## 9. Limites et améliorations futures
 
 Les principales améliorations prévues sont :
-- rendre les requêtes API moins gourmandes et regrouper certaines données pour réduire la latence ;
+- optimiser les performances de production et réduire la latence des requêtes API ;
+- rendre les requêtes API moins gourmandes et regrouper certaines données pour réduire la quantité de données transférées ;
 - renforcer les tests automatisés ;
 - mettre en place une véritable gestion des emails, notamment la vérification d'adresse et la récupération de mot de passe ;
 - utiliser des médias distincts pour chaque module ;
