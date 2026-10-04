@@ -35,7 +35,7 @@
           @if(!libraryReady()) {
             <span class="inline-flex rounded-full border border-line bg-paper px-6 py-3.5 font-semibold text-muted">Vérification de votre bibliothèque…</span>
           } @else if(enrolled()) {
-            <a [routerLink]="['/learn', course.id, nextModuleId]" class="inline-flex rounded-full border border-line bg-paper px-6 py-3.5 font-semibold text-ink transition hover:border-orange hover:text-orange">✓ Continuer la formation</a>
+            <a [routerLink]="['/learn', course.id, courseActionModuleId]" class="inline-flex rounded-full border border-line bg-paper px-6 py-3.5 font-semibold text-ink transition hover:border-orange hover:text-orange">{{ courseActionLabel }}</a>
           } @else {
             <button (click)="enroll()" [disabled]="enrolling" class="rounded-full bg-orange px-6 py-3.5 font-semibold text-white transition hover:bg-orange-dark disabled:cursor-wait disabled:opacity-60">{{ enrolling ? 'Ajout en cours…' : 'Ajouter à ma bibliothèque' }}</button>
           }
