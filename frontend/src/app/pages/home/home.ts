@@ -10,9 +10,13 @@ export class Home implements AfterViewInit {
   private readonly service=inject(CoursesService);
   private readonly host=inject(ElementRef<HTMLElement>);
   readonly courses=signal<Course[]>([]);
+  readonly loading=signal(true);
 
   constructor(){
-    this.service.list().subscribe({next:c=>this.courses.set(c.slice(0,3)),error:()=>this.courses.set([])});
+    this.service.list().subscribe({
+      next:c=>{this.courses.set(c.slice(0,3));this.loading.set(false);},
+      error:()=>{this.courses.set([]);this.loading.set(false);}
+    });
   }
 
   ngAfterViewInit():void{
