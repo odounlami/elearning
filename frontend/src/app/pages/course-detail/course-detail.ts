@@ -15,6 +15,8 @@ export class CourseDetail implements AfterViewInit {
   private readonly host = inject(ElementRef<HTMLElement>);
 
   readonly course = signal<Course | null>(null);
+  readonly loading = signal(true);
+  readonly loadError = signal(false);
   readonly favorite = signal(false);
   readonly favoriteBusy = signal(false);
   readonly visualVariant = computed(() => {
@@ -28,14 +30,21 @@ export class CourseDetail implements AfterViewInit {
 
   constructor() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    const loadCourse = () => this.service.get(id).subscribe((course) => {
-      this.course.set(course);
-      this.favorite.set(!!course.isFavorite);
+    const loadCourse = () => this.service.get(id).subscribe({
+      next: (course) => {
+        this.course.set(course);
+        this.favorite.set(!!course.isFavorite);
+        this.loading.set(false);
       const pending = localStorage.getItem('elearning_pending_course') === String(course.id);
-      if (this.auth.isAuthenticated() && pending) {
-        localStorage.removeItem('elearning_pending_course');
-        this.enroll();
-      }
+        if (this.auth.isAuthenticated() && pending) {
+          localStorage.removeItem('elearning_pending_course');
+          this.enroll();
+        }
+      },
+      error: () => {
+        this.loading.set(false);
+        this.loadError.set(true);
+      },
     });
 
     if (this.auth.isAuthenticated()) {
