@@ -26,6 +26,7 @@ export class CourseDetail implements AfterViewInit {
   });
   enrolling = false;
   readonly enrolled = signal(false);
+  readonly completedModuleIds = signal<Set<number>>(new Set());
   readonly libraryReady = signal(!this.auth.isAuthenticated());
 
   constructor() {
@@ -35,7 +36,7 @@ export class CourseDetail implements AfterViewInit {
         this.course.set(course);
         this.favorite.set(!!course.isFavorite);
         this.loading.set(false);
-      const pending = localStorage.getItem('elearning_pending_course') === String(course.id);
+        const pending = localStorage.getItem('elearning_pending_course') === String(course.id);
         if (this.auth.isAuthenticated() && pending) {
           localStorage.removeItem('elearning_pending_course');
           this.enroll();
@@ -49,13 +50,28 @@ export class CourseDetail implements AfterViewInit {
 
     if (this.auth.isAuthenticated()) {
       this.service.library().subscribe({
-        next: (items) => { this.enrolled.set(items.some((item) => item.course.id === id)); this.libraryReady.set(true); loadCourse(); },
-        error: () => { this.libraryReady.set(true); loadCourse(); },
+        next: (items) => {
+          const enrollment = items.find((item) => item.course.id === id);
+          this.enrolled.set(!!enrollment);
+          this.completedModuleIds.set(new Set(enrollment?.completedModuleIds ?? []));
+          this.libraryReady.set(true);
+          loadCourse();
+        },
+        error: () => {
+          this.libraryReady.set(true);
+          loadCourse();
+        },
       });
     } else loadCourse();
   }
 
   ngAfterViewInit(): void { revealPage(this.host); }
+
+  get nextModuleId(): number {
+    const course = this.course();
+    if (!course?.modules.length) return 0;
+    return (course.modules.find((module) => !this.completedModuleIds().has(module.id)) ?? course.modules[course.modules.length - 1]).id;
+  }
 
   enroll(): void {
     const id = this.course()?.id;
