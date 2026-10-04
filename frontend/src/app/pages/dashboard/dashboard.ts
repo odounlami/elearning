@@ -81,6 +81,18 @@ export class Dashboard implements AfterViewInit {
     return this.favorites().some((course) => course.id === courseId);
   }
 
+  actionLabel(item: Enrollment): string {
+    if (item.progress >= 100) return 'Revoir →';
+    if (item.progress > 0) return 'Continuer →';
+    return 'Commencer →';
+  }
+
+  actionModuleId(item: Enrollment): number {
+    if (item.progress >= 100) return item.course.modules[0]?.id ?? 0;
+    const completed = new Set(item.completedModuleIds);
+    return item.course.modules.find((module) => !completed.has(module.id))?.id ?? item.course.modules[0]?.id ?? 0;
+  }
+
   setPage(page: number): void {
     this.page = Math.max(1, Math.min(page, this.totalPages));
   }
