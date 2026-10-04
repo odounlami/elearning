@@ -48,6 +48,8 @@ export class CourseDetail implements AfterViewInit {
       },
     });
 
+    loadCourse();
+
     if (this.auth.isAuthenticated()) {
       this.service.library().subscribe({
         next: (items) => {
@@ -55,14 +57,10 @@ export class CourseDetail implements AfterViewInit {
           this.enrolled.set(!!enrollment);
           this.completedModuleIds.set(new Set(enrollment?.completedModuleIds ?? []));
           this.libraryReady.set(true);
-          loadCourse();
         },
-        error: () => {
-          this.libraryReady.set(true);
-          loadCourse();
-        },
+        error: () => this.libraryReady.set(true),
       });
-    } else loadCourse();
+    }
   }
 
   ngAfterViewInit(): void { revealPage(this.host); }
