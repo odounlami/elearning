@@ -17,6 +17,7 @@ export class Courses implements AfterViewInit {
 
   readonly all = signal<Course[]>([]);
   readonly libraryIds = signal<Set<number>>(new Set());
+  readonly loading = signal(true);
 
   search = '';
   level: 'ALL' | Level = 'ALL';
@@ -25,7 +26,13 @@ export class Courses implements AfterViewInit {
   readonly pageSize = 9;
 
   constructor() {
-    this.service.list().subscribe((courses) => this.all.set(courses));
+    this.service.list().subscribe({
+      next: (courses) => {
+        this.all.set(courses);
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false),
+    });
     if (this.auth.isAuthenticated()) {
       this.service.library().subscribe((items) => {
         this.libraryIds.set(new Set(items.map((item) => item.course.id)));
