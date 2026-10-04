@@ -65,10 +65,28 @@ export class CourseDetail implements AfterViewInit {
 
   ngAfterViewInit(): void { revealPage(this.host); }
 
+  get progress(): number {
+    const course = this.course();
+    if (!course?.modules.length) return 0;
+    return Math.round((this.completedModuleIds().size / course.modules.length) * 100);
+  }
+
   get nextModuleId(): number {
     const course = this.course();
     if (!course?.modules.length) return 0;
     return (course.modules.find((module) => !this.completedModuleIds().has(module.id)) ?? course.modules[course.modules.length - 1]).id;
+  }
+
+  get courseActionLabel(): string {
+    if (this.progress >= 100) return 'Revoir la formation →';
+    if (this.progress > 0) return 'Continuer la formation →';
+    return 'Commencer la formation →';
+  }
+
+  get courseActionModuleId(): number {
+    const course = this.course();
+    if (!course?.modules.length) return 0;
+    return this.progress >= 100 ? course.modules[0].id : this.nextModuleId;
   }
 
   enroll(): void {
