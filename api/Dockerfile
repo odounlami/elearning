@@ -18,4 +18,4 @@ COPY --from=build /app/prisma7.config.ts ./prisma7.config.ts
 COPY --from=build /app/src ./src
 COPY --from=build /app/generated ./generated
 COPY --from=build /app/dist ./dist
-CMD ["npm", "start"]
+CMD ["sh", "-c", "npx prisma db push && npm run db:seed && npm start"]
