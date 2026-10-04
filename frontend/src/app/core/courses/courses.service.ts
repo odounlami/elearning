@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { API_BASE_URL } from '../config';
 import { Course, Enrollment } from '../../shared/models/course';
-import { Observable, of, tap } from 'rxjs';
+import { Observable, of, switchMap, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CoursesService {
@@ -44,7 +44,7 @@ export class CoursesService {
 
   completeModule(id: number) {
     return this.http.post(API_BASE_URL + '/modules/' + id + '/complete', {}).pipe(
-      tap(() => this.library(true).subscribe()),
+      switchMap(() => this.library(true)),
     );
   }
 
