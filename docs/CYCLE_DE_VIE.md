@@ -94,7 +94,7 @@ L'API utilise des tokens JWT. Les mots de passe sont hashés avec bcrypt et les 
 
 Les données de progression ne peuvent être enregistrées que pour un utilisateur inscrit à la formation concernée.
 
-La gestion des emails réels n'a pas été intégrée dans le périmètre des 72 heures : l'inscription ne déclenche pas d'email de vérification et aucun parcours de récupération de mot de passe par email n'est actuellement disponible. Ces fonctionnalités nécessiteraient notamment un fournisseur d'envoi d'emails, la gestion de modèles et de liens sécurisés à durée limitée.
+La gestion des emails réels n'a pas encore été intégrée : l'inscription ne déclenche pas d'email de vérification et le parcours « mot de passe oublié » n'est pas encore disponible. Ces fonctionnalités sont prévues comme évolutions à venir et nécessiteraient notamment un fournisseur d'envoi d'emails, la gestion de modèles et de liens sécurisés à durée limitée.
 
 ### Docker
 
