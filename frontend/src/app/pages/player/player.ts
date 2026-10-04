@@ -29,6 +29,9 @@ export class Player implements AfterViewInit {
   readonly course = signal<Course | null>(null);
   readonly current = signal<Module | null>(null);
   readonly completed = signal<Set<number>>(new Set());
+  readonly loadingModule = signal(true);
+  readonly completing = signal(false);
+  readonly videoEnded = signal(false);
 
   audioLanguage = '';
 
@@ -37,6 +40,10 @@ export class Player implements AfterViewInit {
       const courseId = Number(params.get('courseId'));
       const moduleId = Number(params.get('moduleId'));
       if (!Number.isInteger(courseId)) return;
+
+      this.loadingModule.set(true);
+      this.videoEnded.set(false);
+      this.current.set(null);
 
       this.service.library().subscribe({
         next: (items) => {
@@ -66,11 +73,12 @@ export class Player implements AfterViewInit {
 
         this.current.set(module);
         this.audioLanguage = module.audioTracks?.[0]?.language ?? course.language;
-        setTimeout(() => this.resetMedia(), 0);
 
         if (module.id !== moduleId) {
           void this.router.navigate(['/learn', course.id, module.id], { replaceUrl: true });
         }
+
+        setTimeout(() => this.startMedia(), 0);
       },
     });
   }
@@ -123,33 +131,54 @@ export class Player implements AfterViewInit {
 
   complete(): void {
     const module = this.current();
-    if (!module || this.completed().has(module.id)) return;
+    if (!module || this.completed().has(module.id) || this.completing() || !this.videoEnded()) return;
 
+    this.completing.set(true);
     this.service.completeModule(module.id).subscribe({
       next: () => {
         this.completed.update((items) => new Set(items).add(module.id));
+        this.completing.set(false);
         const course = this.course();
         if (course && this.currentIndex < course.modules.length - 1) {
           void this.router.navigate(['/learn', course.id, course.modules[this.currentIndex + 1].id]);
         }
       },
+      error: () => this.completing.set(false),
     });
   }
 
-  private resetMedia(): void {
+  onVideoEnded(): void {
+    this.videoEnded.set(true);
+    this.audio?.nativeElement.pause();
+  }
+
+  private startMedia(): void {
     const video = this.video?.nativeElement;
     const audio = this.audio?.nativeElement;
 
-    if (video) {
-      video.pause();
-      video.currentTime = 0;
-      video.load();
-    }
+    if (!video) return;
+
+    video.pause();
+    video.currentTime = 0;
+    video.load();
 
     if (audio) {
       audio.pause();
       audio.currentTime = 0;
       audio.load();
+    }
+
+    const startVideo = () => {
+      this.loadingModule.set(false);
+      void video.play().catch(() => {
+        this.loadingModule.set(false);
+      });
+    };
+
+    if (video.readyState >= HTMLMediaElement.HAVE_METADATA) {
+      startVideo();
+    } else {
+      video.addEventListener('loadeddata', startVideo, { once: true });
     }
   }
 
