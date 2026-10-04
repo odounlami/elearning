@@ -1,10 +1,18 @@
-@if(error()){<div class="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{{error()}}</div>}
-<form [formGroup]="form" (ngSubmit)="submit()" class="mt-5 grid gap-3">
-  <label><span class="mb-1 block text-sm font-semibold">Nom</span><input formControlName="name" autocomplete="name" class="w-full rounded-xl border border-line bg-cream px-4 py-2.5 outline-none focus:ring-2 focus:ring-orange">@if(form.controls.name.touched && form.controls.name.invalid){<span class="mt-1 block text-xs text-red-700">Le nom doit contenir au moins 2 caractères.</span>}</label>
-  <label><span class="mb-1 block text-sm font-semibold">Email</span><input formControlName="email" type="email" autocomplete="email" class="w-full rounded-xl border border-line bg-cream px-4 py-2.5 outline-none focus:ring-2 focus:ring-orange">@if(form.controls.email.touched && form.controls.email.invalid){<span class="mt-1 block text-xs text-red-700">Entrez une adresse email valide.</span>}</label>
-  <div class="grid gap-3 sm:grid-cols-2">
-    <label><span class="mb-1 block text-sm font-semibold">Mot de passe</span><input formControlName="password" type="password" autocomplete="new-password" class="w-full rounded-xl border border-line bg-cream px-4 py-2.5 outline-none focus:ring-2 focus:ring-orange">@if(form.controls.password.touched && form.controls.password.invalid){<span class="mt-1 block text-xs text-red-700">8 caractères minimum.</span>}</label>
-    <label><span class="mb-1 block text-sm font-semibold">Confirmation</span><input formControlName="confirmPassword" type="password" autocomplete="new-password" class="w-full rounded-xl border border-line bg-cream px-4 py-2.5 outline-none focus:ring-2 focus:ring-orange">@if(form.controls.confirmPassword.touched && form.controls.confirmPassword.value !== form.controls.password.value){<span class="mt-1 block text-xs text-red-700">Les mots de passe ne correspondent pas.</span>}</label>
-  </div>
-  <button [disabled]="loading()" class="mt-1 w-full rounded-xl bg-ink py-3 font-semibold text-cream transition hover:bg-orange disabled:opacity-60">{{loading()?'Création...':'Créer mon compte'}}</button>
-</form>
+<main class="grid min-h-[calc(100vh-144px)] place-items-center px-5 py-6">
+  <section class="js-reveal w-full max-w-105 rounded-3xl border border-line bg-white p-6 shadow-sm sm:p-7">
+    <p class="font-mono text-xs uppercase tracking-widest text-orange">Premier chapitre</p>
+    <h1 class="mt-2 font-display text-4xl font-bold">Créez votre bibliothèque.</h1>
+    <p class="mt-2 text-sm leading-6 text-muted">Un compte suffit pour sauvegarder vos formations et votre progression.</p>
+    @if(error()){<div class="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{{error()}}</div>}
+    <form [formGroup]="form" (ngSubmit)="submit()" class="mt-5 grid gap-3">
+      <label><span class="mb-1 block text-sm font-semibold">Nom</span><input formControlName="name" autocomplete="name" class="w-full rounded-xl border border-line bg-cream px-4 py-2.5 outline-none focus:ring-2 focus:ring-orange">@if(form.controls.name.touched && form.controls.name.invalid){<span class="mt-1 block text-xs text-red-700">Le nom doit contenir au moins 2 caractères.</span>}</label>
+      <label><span class="mb-1 block text-sm font-semibold">Email</span><input formControlName="email" type="email" autocomplete="email" class="w-full rounded-xl border border-line bg-cream px-4 py-2.5 outline-none focus:ring-2 focus:ring-orange">@if(form.controls.email.touched && form.controls.email.invalid){<span class="mt-1 block text-xs text-red-700">Entrez une adresse email valide.</span>}</label>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <label><span class="mb-1 block text-sm font-semibold">Mot de passe</span><input formControlName="password" type="password" autocomplete="new-password" class="w-full rounded-xl border border-line bg-cream px-4 py-2.5 outline-none focus:ring-2 focus:ring-orange">@if(form.controls.password.touched && form.controls.password.invalid){<span class="mt-1 block text-xs text-red-700">8 caractères minimum.</span>}</label>
+        <label><span class="mb-1 block text-sm font-semibold">Confirmation</span><input formControlName="confirmPassword" type="password" autocomplete="new-password" class="w-full rounded-xl border border-line bg-cream px-4 py-2.5 outline-none focus:ring-2 focus:ring-orange">@if(form.controls.confirmPassword.touched && form.controls.confirmPassword.value !== form.controls.password.value){<span class="mt-1 block text-xs text-red-700">Les mots de passe ne correspondent pas.</span>}</label>
+      </div>
+      <button [disabled]="loading()" class="mt-1 w-full rounded-xl bg-ink py-3 font-semibold text-cream transition hover:bg-orange disabled:opacity-60">{{loading()?'Création...':'Créer mon compte'}}</button>
+    </form>
+    <p class="mt-4 text-center text-sm text-muted">Déjà inscrit ? <a routerLink="/login" class="font-semibold text-orange">Se connecter</a></p>
+  </section>
+</main>
