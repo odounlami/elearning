@@ -35,12 +35,12 @@
           @if(!libraryReady()) {
             <span class="inline-flex rounded-full border border-line bg-paper px-6 py-3.5 font-semibold text-muted">Vérification de votre bibliothèque…</span>
           } @else if(enrolled()) {
-            <a routerLink="/dashboard" class="inline-flex rounded-full border border-line bg-paper px-6 py-3.5 font-semibold text-ink transition hover:border-orange hover:text-orange">✓ Déjà ajouté à ma bibliothèque</a>
+            <a [routerLink]="['/learn', course.id, nextModuleId]" class="inline-flex rounded-full border border-line bg-paper px-6 py-3.5 font-semibold text-ink transition hover:border-orange hover:text-orange">✓ Continuer la formation</a>
           } @else {
             <button (click)="enroll()" [disabled]="enrolling" class="rounded-full bg-orange px-6 py-3.5 font-semibold text-white transition hover:bg-orange-dark disabled:cursor-wait disabled:opacity-60">{{ enrolling ? 'Ajout en cours…' : 'Ajouter à ma bibliothèque' }}</button>
           }
           <button type="button" (click)="toggleFavorite()" [disabled]="favoriteBusy()" [attr.aria-label]="favorite() ? 'Retirer des favoris' : 'Ajouter aux favoris'" [attr.title]="favorite() ? 'Retirer des favoris' : 'Ajouter aux favoris'" class="inline-flex items-center gap-2 rounded-full border border-line bg-white px-4 py-3.5 text-sm font-semibold text-ink transition hover:border-orange hover:text-orange disabled:opacity-60">
-            <svg viewBox="0 0 24 24" aria-hidden="true" class="h-5 w-5 fill-none stroke-current stroke-2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"/></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="h-5 w-5 fill-none stroke-current stroke-2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0 0 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"/></svg>
             {{ favorite() ? 'Favori' : 'Ajouter aux favoris' }}
           </button>
         </div>
