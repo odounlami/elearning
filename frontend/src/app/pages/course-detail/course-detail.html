@@ -1,4 +1,30 @@
-@if(course(); as course) {
+@if(loading()) {
+  <main class="mx-auto max-w-310 px-5 py-10 lg:px-8 lg:py-16" aria-label="Chargement de la formation">
+    <div class="h-5 w-36 animate-pulse rounded bg-paper-deep"></div>
+    <section class="mt-6 grid gap-8 lg:grid-cols-[.8fr_1.2fr]">
+      <div class="min-h-90 animate-pulse rounded-3xl bg-paper-deep"></div>
+      <div class="flex flex-col justify-center">
+        <div class="h-5 w-full max-w-2xl animate-pulse rounded bg-paper-deep"></div>
+        <div class="mt-3 h-5 w-4/5 max-w-2xl animate-pulse rounded bg-paper-deep"></div>
+        <div class="mt-8 h-12 w-56 animate-pulse rounded-full bg-paper-deep"></div>
+        <div class="mt-8 grid gap-3 sm:grid-cols-3">
+          <div class="h-24 animate-pulse rounded-2xl bg-paper-deep"></div>
+          <div class="h-24 animate-pulse rounded-2xl bg-paper-deep"></div>
+          <div class="h-24 animate-pulse rounded-2xl bg-paper-deep"></div>
+        </div>
+      </div>
+    </section>
+    <div class="mt-14 flex justify-center" role="status" aria-label="Chargement">
+      <span class="h-5 w-5 animate-spin rounded-full border-2 border-line border-t-orange"></span>
+    </div>
+  </main>
+} @else if(loadError()) {
+  <main class="mx-auto max-w-310 px-5 py-20 text-center lg:px-8">
+    <p class="font-mono text-xs uppercase tracking-widest text-orange">Formation introuvable</p>
+    <h1 class="mt-3 font-display text-3xl font-bold">Impossible de charger cette formation.</h1>
+    <a routerLink="/courses" class="mt-6 inline-flex rounded-full bg-orange px-6 py-3 font-semibold text-white transition hover:bg-orange-dark">Retour au catalogue</a>
+  </main>
+} @else if(course(); as course) {
   <main class="mx-auto max-w-310 px-5 py-10 lg:px-8 lg:py-16">
     <a routerLink="/courses" class="js-reveal text-sm font-semibold text-orange">← Retour au catalogue</a>
     <section class="mt-6 grid gap-8 lg:grid-cols-[.8fr_1.2fr]">
