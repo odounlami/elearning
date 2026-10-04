@@ -4,25 +4,64 @@
 
 L'objectif était de développer en 72 heures une mini plateforme e-learning permettant à un utilisateur de créer un compte, se connecter, consulter des formations, suivre leurs modules et visualiser sa progression.
 
-Fonctionnalités retenues : inscription et connexion, catalogue, recherche par titre ou formateur, filtres par langue et niveau, détail d'une formation, lecteur vidéo et audio, progression, bibliothèque personnelle, favoris et navigation automatique vers le module suivant.
+Le périmètre fonctionnel retenu couvre :
+- inscription, connexion, déconnexion et session ;
+- catalogue avec recherche par titre ou formateur ;
+- filtres par langue et niveau ;
+- détail d'une formation et accès à ses modules ;
+- lecteur vidéo avec pistes audio multilingues ;
+- sous-titres ;
+- validation d'un module et progression ;
+- bibliothèque personnelle ;
+- favoris.
 
-Le jeu de données de démonstration a été volontairement enrichi afin de rendre visibles la recherche, les filtres, la pagination, les favoris et la progression dans le délai imparti.
+Le sujet autorisant une simulation du doublage, le choix a été de représenter plusieurs pistes audio pour un même module plutôt que de mettre en place un véritable système de génération ou de synchronisation de doublage.
+
+Le jeu de données de démonstration a été volontairement enrichi au-delà du minimum fonctionnel afin de rendre visibles la recherche, les filtres, la pagination, les favoris et la progression dans le temps imparti de 72 heures. Ce volume ne correspond pas à une exigence métier, mais à un choix de démonstration.
 
 ## 2. Conception
+
+### Une approche design avant développement
+
+La conception de l'interface a été réalisée avant le développement fonctionnel afin de fixer une direction visuelle cohérente plutôt que de construire une interface générique puis de la décorer.
+
+L'univers retenu est volontairement éditorial et inspiré d'une bibliothèque : fonds papier/crème, structure brune, typographies de lecture et accents orange/ambre. L'objectif était de donner une identité plus chaleureuse et ludique à l'apprentissage, sans perdre le sérieux nécessaire à une plateforme de formation.
+
+Le design system s'appuie notamment sur :
+- \`paper\` et \`paper-deep\` pour les surfaces ;
+- \`ink\`, \`muted\` et \`line\` pour la hiérarchie visuelle ;
+- orange et ambre comme couleurs d'accent ;
+- **Lora** pour les titres ;
+- **Inter** pour le contenu courant ;
+- **DM Mono** pour certains éléments techniques.
+
+Les variantes visuelles des cartes restent limitées aux couleurs du système afin de conserver une cohérence entre l'accueil, le catalogue et le détail d'une formation. Le tableau de bord a également été conçu comme une bibliothèque personnelle plutôt que comme un tableau de bord SaaS rempli de statistiques artificielles.
+
+### Parcours utilisateur
 
 Le parcours principal est : découvrir une formation, consulter son détail, s'inscrire ou se connecter, ajouter la formation à sa bibliothèque, suivre les modules, valider sa progression puis reprendre la formation depuis sa bibliothèque.
 
 Les principaux écrans sont l'accueil, le catalogue, le détail d'une formation, la connexion, l'inscription, le lecteur et la bibliothèque personnelle.
 
-La direction visuelle a été conçue autour d'un univers éditorial et de bibliothèque : fond papier/crème, typographies de lecture, structure brune et accents orange. L'interface a ensuite été ajustée pendant les tests.
+### Modèle fonctionnel
 
-Le modèle fonctionnel repose sur une formation contenant plusieurs modules ordonnés. Les modules terminés sont enregistrés par utilisateur pour calculer la progression. Plusieurs pistes audio peuvent être associées à un même module afin de simuler le doublage multilingue demandé.
+Une formation contient plusieurs modules ordonnés. Chaque module possède une vidéo et peut avoir plusieurs pistes audio. L'inscription d'un utilisateur à une formation est distincte de la validation des modules : les modules terminés sont enregistrés individuellement afin de calculer une progression fiable.
+
+Les favoris sont également modélisés comme une relation utilisateur/formation.
 
 ## 3. Architecture et choix techniques
 
+### Comparaison Angular / Next.js
+
+Avant de commencer le développement, Angular et Next.js ont été comparés.
+
+Next.js était une option familière et aurait permis de développer rapidement, mais le sujet impose Angular pour le frontend. Angular a donc été retenu, non pas par manque d'alternative, mais parce qu'il répond directement au cadre du sujet et fournit une structure adaptée à une application organisée en composants, routes, services et guards.
+
+Le choix permet également de garder une séparation claire entre l'application frontend et l'API backend.
+
 ### Vue d'ensemble
 
-```
+\`\`\`
 Angular + Tailwind CSS
           │
           ▼
@@ -33,63 +72,82 @@ Express + TypeScript
           │
           ▼
       PostgreSQL
-```
+\`\`\`
 
-En production, le frontend est hébergé séparément de l'API et la base PostgreSQL est hébergée sur un service dédié.
+En production, le frontend est déployé séparément de l'API et la base PostgreSQL est hébergée sur un service dédié.
 
 ### Frontend
 
-Angular a été choisi pour son architecture par composants, son routing, ses services et ses guards. Tailwind CSS permet de mettre en œuvre rapidement le design system défini pour le projet.
+Le frontend utilise Angular 22 et Tailwind CSS v4. Angular fournit les composants, le routing, les services et les guards nécessaires à l'application. Tailwind permet de mettre en œuvre rapidement le système visuel défini pendant la conception.
 
 ### Backend
 
-Express et TypeScript permettent de construire une API REST légère, structurée et typée, adaptée au périmètre du projet.
+Express avec TypeScript a été retenu pour construire une API REST légère et structurée, adaptée au périmètre du projet.
 
 ### Base de données
 
-PostgreSQL a été retenu pour gérer les relations entre utilisateurs, formations, modules et progression. Prisma fournit un accès typé à la base.
+PostgreSQL a été choisi pour gérer les relations entre utilisateurs, formations, modules et progression. Prisma 7 fournit un accès typé à la base.
 
-Les principales entités sont : `User`, `Course`, `Module`, `AudioTrack`, `Enrollment`, `ModuleCompletion` et `Favorite`.
+Les principales entités sont : \`User\`, \`Course\`, \`Module\`, \`AudioTrack\`, \`Enrollment\`, \`ModuleCompletion\` et \`Favorite\`.
 
-### Authentification
+### Authentification et protection
 
-L'API utilise des tokens JWT. Les routes protégées sont contrôlées par un middleware d'authentification et les pages privées par un guard Angular.
+L'API utilise des tokens JWT. Les mots de passe sont hashés avec bcrypt et les tokens sont signés avec une clé provenant des variables d'environnement. Les routes privées sont protégées côté API par middleware et côté Angular par des guards.
+
+Les données de progression ne peuvent être enregistrées que pour un utilisateur inscrit à la formation concernée.
 
 ### Docker
 
-Docker Compose permet de lancer le frontend, l'API et PostgreSQL dans un environnement reproductible. Le démarrage initialise le schéma et les données de démonstration.
+Docker Compose permet de lancer le frontend, l'API et PostgreSQL dans un environnement reproductible. Le démarrage de l'API initialise le schéma Prisma et les données de démonstration.
 
 ## 4. Développement
 
-Le développement a été réalisé progressivement, en partant de la conception de l'interface puis en reliant les écrans aux fonctionnalités backend.
+Le développement a été réalisé progressivement : conception de l'interface, construction des écrans, mise en place de l'API et du modèle de données, puis raccordement des parcours fonctionnels.
 
-Le code est séparé entre pages et composants Angular, services frontend, authentification, routes et services API, modèles Prisma et seed de démonstration.
+Une attention particulière a été portée aux comportements réels du lecteur :
+- le bouton de validation apparaît après la fin de la vidéo ;
+- la validation entraîne automatiquement le passage au module suivant ;
+- le module suivant démarre depuis le début ;
+- les modules verrouillés ne sont pas accessibles directement ;
+- l'état du sélecteur de modules suit le module réellement consulté.
 
-Une attention particulière a été portée aux états de chargement et aux erreurs. La progression est calculée à partir des modules terminés et le lecteur empêche l'accès direct à un module verrouillé.
+Les états de chargement et les erreurs ont également été travaillés, notamment parce que les différences de latence entre le développement local et la production étaient visibles.
+
+La bibliothèque et les favoris ont été mis en cache côté frontend afin de réduire certaines requêtes répétées. Les données utilisateur sont également préchargées après l'authentification.
+
+### Itérations et Git
+
+Le développement a suivi des itérations courtes avec des commits ciblés, notamment avec les préfixes \`feat:\`, \`fix:\`, \`perf:\` et \`docs:\`. Les corrections de progression, d'authentification, de chargement, de production et de performance ont ainsi été isolées dans des commits lisibles et traçables.
 
 ## 5. Tests et validation
 
 La validation a principalement été réalisée par des tests fonctionnels manuels au fur et à mesure du développement.
 
-Les principaux parcours vérifiés sont :
-
-- inscription, connexion et déconnexion ;
-- accès aux pages protégées ;
-- recherche et filtrage du catalogue ;
-- consultation et inscription à une formation ;
+Les principaux cas vérifiés sont :
+- inscription, connexion, session et déconnexion ;
+- accès aux pages protégées avec et sans session ;
+- recherche par titre ou formateur ;
+- filtres langue et niveau ;
+- pagination et tri de la bibliothèque ;
+- inscription à une formation ;
+- distinction entre démarrage, reprise et consultation d'une formation ;
+- accès au lecteur uniquement lorsque les conditions d'accès sont respectées ;
+- blocage d'un module verrouillé ;
 - lecture vidéo, pistes audio et sous-titres ;
+- affichage de la validation uniquement après la fin de la vidéo ;
 - validation d'un module et passage automatique au suivant ;
-- calcul de la progression ;
-- bibliothèque et favoris.
+- calcul et affichage de la progression ;
+- ajout et retrait des favoris.
 
-Le projet a également été construit et exécuté avec Docker Compose. La version déployée a été vérifiée avec le frontend, l'API et la base de production.
+Le projet a aussi été construit et exécuté avec Docker Compose afin de vérifier l'initialisation de PostgreSQL, de Prisma, du seed et le démarrage des services.
+
+Enfin, la version déployée a été testée avec le frontend, l'API et la base de production afin de détecter les problèmes qui n'apparaissaient pas en local.
 
 Les tests automatisés restent limités dans le délai de 72 heures.
 
 ## 6. Sécurité
 
 Plusieurs mesures ont été mises en place :
-
 - mots de passe hashés avec bcrypt ;
 - tokens JWT signés avec une clé secrète provenant des variables d'environnement ;
 - expiration des tokens ;
@@ -97,39 +155,67 @@ Plusieurs mesures ont été mises en place :
 - validation des entrées avec Zod ;
 - secrets de production non versionnés ;
 - CORS configuré par variable d'environnement ;
-- vérification de l'inscription avant l'enregistrement de la progression.
+- vérification de l'inscription à une formation avant l'enregistrement de la progression.
+
+Le frontend ne considère pas la simple présence d'une donnée d'interface comme une autorisation : les opérations sensibles sont également contrôlées par l'API.
 
 ## 7. Déploiement
 
-En local, l'ensemble de la plateforme peut être lancé avec :
+### Développement local
 
-```bash
+L'ensemble de la plateforme peut être lancé avec :
+
+\`\`\`bash
 docker compose up --build
-```
+\`\`\`
 
-La production utilise Vercel pour le frontend, Render pour l'API Express et Supabase pour PostgreSQL.
+Le frontend est servi sur le port 8080 et l'API sur le port 3000.
+
+### Production
+
+La production utilise :
+- **Vercel** pour le frontend ;
+- **Render** pour l'API Express ;
+- **Supabase** pour PostgreSQL.
+
+Frontend : \`https://elearning-kappa-one.vercel.app\`
+
+API : \`https://elearning-05hx.onrender.com\`
 
 Cette séparation permet de déployer indépendamment l'interface, l'API et la base de données tout en conservant une architecture simple.
 
 ## 8. Retour d'expérience
 
-Le principal enjeu a été de trouver un équilibre entre le périmètre demandé, la qualité de l'interface et le délai de 72 heures.
+Le principal enjeu a été de trouver un équilibre entre le périmètre demandé, la qualité de l'interface et le délai de 72 heures. Plusieurs problèmes rencontrés en production ont également obligé à distinguer les problèmes purement fonctionnels des problèmes d'environnement.
 
-Les principales difficultés rencontrées ont concerné la base PostgreSQL en production, l'initialisation Prisma sur Render, la configuration CORS entre le frontend et l'API, les états de chargement, la progression du lecteur et la gestion des médias.
+### Initialisation de la base en production
 
-Ces problèmes ont été traités progressivement par des tests locaux puis des vérifications en production.
+L'API pouvait démarrer alors que les tables PostgreSQL n'étaient pas encore présentes, ce qui provoquait des erreurs lors de l'appel au catalogue.
+
+Une première tentative d'exécuter plusieurs commandes Prisma et le démarrage du serveur directement dans la configuration Render n'a pas fonctionné correctement. L'initialisation a finalement été déplacée dans le démarrage du conteneur afin que le schéma soit synchronisé et que le seed soit exécuté avant le lancement de l'API.
+
+### Configuration CORS
+
+Le frontend de production appelait l'API depuis un domaine Vercel stable, tandis qu'une configuration CORS pointait vers une autre URL de déploiement. Le navigateur bloquait alors les requêtes.
+
+La configuration a été corrigée pour utiliser le domaine frontend de production comme origine autorisée. Cette vérification a permis de valider séparément le fonctionnement de l'API et la communication frontend/API.
+
+### Différences entre local et production
+
+Certaines pages étaient sensiblement plus lentes en production qu'en local. Une première optimisation ciblée a consisté à précharger et mettre en cache certaines données utilisateur afin de limiter les requêtes répétées.
+
+Une optimisation plus globale des requêtes reste volontairement identifiée comme travail futur plutôt que d'introduire des changements importants à la fin du délai.
 
 ## 9. Limites et améliorations futures
 
 Les principales améliorations prévues sont :
-
-- optimiser les requêtes API et réduire les données récupérées inutilement ;
-- regrouper certaines requêtes afin de diminuer la latence ;
+- rendre les requêtes API moins gourmandes et regrouper certaines données pour réduire la latence ;
 - renforcer les tests automatisés ;
 - utiliser des médias distincts pour chaque module ;
-- ajouter les bonus restants, notamment les quiz et une administration plus complète.
+- ajouter les bonus restants, notamment les quiz et une administration plus complète ;
+- poursuivre l'optimisation du cache et des chargements côté frontend.
 
-L'optimisation des performances reste une priorité : certaines pages effectuent encore plusieurs requêtes pour récupérer des informations complémentaires. Une évolution future consisterait à regrouper ces données côté API et à mieux exploiter le cache côté frontend.
+Ces évolutions n'ont pas été intégrées au détriment des fonctionnalités principales, afin de respecter le délai et de conserver une base fonctionnelle et démontrable.
 
 ## Méthode de travail
 
