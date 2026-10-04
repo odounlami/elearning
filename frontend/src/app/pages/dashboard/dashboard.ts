@@ -12,15 +12,27 @@ export class Dashboard implements AfterViewInit {
   private readonly service=inject(CoursesService); readonly auth=inject(AuthService); private readonly host=inject(ElementRef<HTMLElement>);
   readonly items=signal<Enrollment[]>([]);
   readonly favorites=signal<Course[]>([]);
+  readonly loading=signal(true);
   search='';
   libraryFilter: 'all' | 'favorites' = 'all';
   levelFilter: 'all' | Level = 'all';
   sortBy: 'recent' | 'title' | 'progress' = 'recent';
   page = 1;
   readonly pageSize = 12;
+  private loaded = 0;
   constructor(){
-    this.service.library().subscribe(x=>this.items.set(x));
-    this.service.favorites().subscribe(x=>this.favorites.set(x));
+    this.service.library().subscribe({
+      next: x => { this.items.set(x); this.finishLoading(); },
+      error: () => this.finishLoading(),
+    });
+    this.service.favorites().subscribe({
+      next: x => { this.favorites.set(x); this.finishLoading(); },
+      error: () => this.finishLoading(),
+    });
+  }
+  private finishLoading(): void {
+    this.loaded += 1;
+    if (this.loaded >= 2) this.loading.set(false);
   }
   ngAfterViewInit(){revealPage(this.host);}
   get matchingLibraryItems(): Enrollment[] {
